@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "56d62d9083b5f0c0f94d536df56ca0ccf54c61ff"
+project_hash = "2b2700d0ef25616887360bef4cc5a61c233f5913"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -902,7 +902,7 @@ version = "0.24.13"
     DynamicQuantities = "06fc5a27-2a28-4c7c-a15d-362465fb6821"
 
 [[deps.MakieDemos]]
-deps = ["CairoMakie", "GLMakie", "JSON3"]
+deps = ["CairoMakie", "GLMakie", "JSON3", "Statistics"]
 path = "."
 uuid = "35a1cc74-286c-4d36-82e8-d8396a8fdc4c"
 version = "0.1.0"

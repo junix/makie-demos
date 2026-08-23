@@ -1,0 +1,15 @@
+{
+    "artifact": "uncertainty-forecast-transparent.png",
+    "transparent_pixels": 1338845,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 203121,
+    "demo": "uncertainty-forecast",
+    "render_seconds": 0.5436,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 240017,
+    "background": "transparent"
+}

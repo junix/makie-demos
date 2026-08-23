@@ -1,0 +1,14 @@
+[
+  {"id":"surface-terrain","use":"3d surface","family":"3d surface","question":"How do interacting waves shape a terrain?","complexity":"advanced","tags":["surface","3d","wireframe"]},
+  {"id":"vector-field","use":"vector analysis","family":"vector analysis","question":"How do vortices meet a directional current?","complexity":"advanced","tags":["vectors","contours","flow"]},
+  {"id":"phase-dashboard","use":"dynamical dashboard","family":"dynamical dashboard","question":"How does one system look across four analytical views?","complexity":"advanced","tags":["phase","spectrum","dashboard"]},
+  {"id":"uncertainty-forecast","use":"uncertainty","family":"uncertainty","question":"How does ensemble uncertainty evolve over a forecast?","complexity":"advanced","tags":["ensemble","band","forecast"]},
+  {"id":"correlation-matrix","use":"matrix","family":"matrix","question":"Which system variables move together or oppose each other?","complexity":"advanced","tags":["correlation","matrix","annotation"]},
+  {"id":"parallel-coordinates","use":"multivariate","family":"multivariate","question":"How do field campaigns compare across five dimensions?","complexity":"advanced","tags":["parallel","profiles","multivariate"]},
+  {"id":"sankey-energy","use":"flow","family":"flow","question":"Where does renewable energy move and dissipate?","complexity":"advanced","tags":["sankey","ribbons","energy"]},
+  {"id":"volume-slices","use":"volume","family":"volume","question":"What structure appears across orthogonal volume slices?","complexity":"advanced","tags":["volume","slices","tomography"]},
+  {"id":"molecular-scene","use":"molecular 3d","family":"molecular 3d","question":"How do atom classes and bonds form a molecule?","complexity":"advanced","tags":["molecule","3d","network"]},
+  {"id":"polar-climate","use":"polar","family":"polar","question":"How do direction and season interact?","complexity":"advanced","tags":["polar","seasonal","climate"]},
+  {"id":"gantt-system","use":"timeline","family":"timeline","question":"How do mission workstreams and gates depend on each other?","complexity":"advanced","tags":["gantt","dependencies","planning"]},
+  {"id":"topology-graph","use":"network","family":"network","question":"Which services bridge a layered compute topology?","complexity":"advanced","tags":["graph","topology","systems"]}
+]

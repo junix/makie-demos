@@ -4,7 +4,7 @@ using Test
 @testset "transparent Makie renders" begin
     mktempdir() do output_dir
         paths = render_all(output_dir)
-        @test length(paths) == 3
+        @test length(paths) >= 12
         for path in paths
             stats = validate_png(path)
             @test stats.width == 1600

@@ -1,0 +1,15 @@
+{
+    "artifact": "sankey-energy-transparent.png",
+    "transparent_pixels": 1393146,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 198364,
+    "demo": "sankey-energy",
+    "render_seconds": 0.6155,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 205049,
+    "background": "transparent"
+}

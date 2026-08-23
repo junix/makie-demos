@@ -1,0 +1,15 @@
+{
+    "artifact": "polar-climate-transparent.png",
+    "transparent_pixels": 1030381,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 309078,
+    "demo": "polar-climate",
+    "render_seconds": 0.1503,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 551989,
+    "background": "transparent"
+}

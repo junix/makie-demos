@@ -1,0 +1,15 @@
+{
+    "artifact": "volume-slices-transparent.png",
+    "transparent_pixels": 941509,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 539871,
+    "demo": "volume-slices",
+    "render_seconds": 0.1888,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 657187,
+    "background": "transparent"
+}

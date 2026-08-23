@@ -1,0 +1,15 @@
+{
+    "artifact": "gantt-system-transparent.png",
+    "transparent_pixels": 1348939,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 200949,
+    "demo": "gantt-system",
+    "render_seconds": 0.8081,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 234972,
+    "background": "transparent"
+}

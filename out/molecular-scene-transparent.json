@@ -1,0 +1,15 @@
+{
+    "artifact": "molecular-scene-transparent.png",
+    "transparent_pixels": 1452303,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 102789,
+    "demo": "molecular-scene",
+    "render_seconds": 0.6105,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 137869,
+    "background": "transparent"
+}

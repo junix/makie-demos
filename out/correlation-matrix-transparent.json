@@ -1,0 +1,15 @@
+{
+    "artifact": "correlation-matrix-transparent.png",
+    "transparent_pixels": 995594,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 508916,
+    "demo": "correlation-matrix",
+    "render_seconds": 0.607,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 602718,
+    "background": "transparent"
+}

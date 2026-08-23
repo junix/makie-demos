@@ -8,7 +8,7 @@
     },
     "colorful_pixels": 160257,
     "demo": "surface-terrain",
-    "render_seconds": 1.1577,
+    "render_seconds": 0.91,
     "data": "deterministic synthetic fixture",
     "visible_pixels": 181517,
     "background": "transparent"

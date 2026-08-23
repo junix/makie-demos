@@ -1,0 +1,15 @@
+{
+    "artifact": "parallel-coordinates-transparent.png",
+    "transparent_pixels": 1224479,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 209564,
+    "demo": "parallel-coordinates",
+    "render_seconds": 0.2974,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 324292,
+    "background": "transparent"
+}

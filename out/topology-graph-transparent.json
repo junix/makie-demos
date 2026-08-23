@@ -1,0 +1,15 @@
+{
+    "artifact": "topology-graph-transparent.png",
+    "transparent_pixels": 1534244,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 23398,
+    "demo": "topology-graph",
+    "render_seconds": 0.2903,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 57166,
+    "background": "transparent"
+}
