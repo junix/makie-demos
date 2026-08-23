@@ -1,0 +1,15 @@
+{
+    "artifact": "surface-terrain-transparent.png",
+    "transparent_pixels": 1414001,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 160257,
+    "demo": "surface-terrain",
+    "render_seconds": 1.1577,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 181517,
+    "background": "transparent"
+}

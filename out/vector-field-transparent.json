@@ -1,0 +1,15 @@
+{
+    "artifact": "vector-field-transparent.png",
+    "transparent_pixels": 1420749,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 102983,
+    "demo": "vector-field",
+    "render_seconds": 1.2876,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 153927,
+    "background": "transparent"
+}

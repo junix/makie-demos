@@ -1,0 +1,4 @@
+out/*
+!out/*-transparent.png
+!out/*-transparent.json
+.DS_Store

@@ -1,0 +1,15 @@
+{
+    "artifact": "phase-dashboard-transparent.png",
+    "transparent_pixels": 1407589,
+    "backend": "CairoMakie",
+    "dimensions": {
+        "height": 1000,
+        "width": 1600
+    },
+    "colorful_pixels": 136140,
+    "demo": "phase-dashboard",
+    "render_seconds": 1.8909,
+    "data": "deterministic synthetic fixture",
+    "visible_pixels": 176455,
+    "background": "transparent"
+}
