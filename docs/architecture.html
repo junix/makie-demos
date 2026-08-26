@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MakieDemos 架构文档</title>
+<style>
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --teal: #0d9488;
+    --teal-soft: #ccfbf1;
+    --rose: #e11d48;
+    --rose-soft: #ffe4e6;
+    --amber: #d97706;
+    --amber-soft: #fef3c7;
+    --violet: #7c3aed;
+    --violet-soft: #ede9fe;
+    --grid: #f1f5f9;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdfa 50%, #fdf4ff 100%);
+    border-radius: var(--radius);
+    padding: 48px 40px;
+    margin-bottom: 48px;
+    border: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .hero .subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .hero .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .badge.primary { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .badge.teal { background: var(--teal-soft); color: var(--teal); border-color: transparent; }
+  .badge.violet { background: var(--violet-soft); color: var(--violet); border-color: transparent; }
+
+  /* Section */
+  section { margin-bottom: 56px; }
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.3px;
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 24px 0 10px;
+    color: var(--text);
+  }
+  p { margin-bottom: 14px; color: #334155; }
+  .prose { background: var(--surface); padding: 24px 28px; border-radius: var(--radius); border: 1px solid var(--border); }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* Feature grid */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .feature {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .feature .icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .feature h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .feature p { font-size: 13.5px; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+  /* Diagram container */
+  .diagram-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .diagram-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  svg { display: block; margin: 0 auto; max-width: 100%; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .legend-swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* Walkthrough */
+  .walkthrough {
+    position: relative;
+    padding-left: 28px;
+    margin: 20px 0;
+  }
+  .walkthrough::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+  .step {
+    position: relative;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+  .step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -28px;
+    top: 16px;
+    width: 22px; height: 22px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--text-muted); margin: 0; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--grid);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  tr:hover td { background: #f8fafc; }
+
+  /* Code-ish inline */
+  code {
+    background: var(--grid);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 13.5px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    color: #0f172a;
+  }
+
+  /* Nav */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    margin-bottom: 40px;
+  }
+  .toc h3 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+  .toc ol { padding-left: 20px; columns: 2; column-gap: 24px; }
+  .toc li { margin-bottom: 6px; font-size: 14px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Footer */
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Animation */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drawIn {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .animate-in {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  .flow-path {
+    stroke-dasharray: 6 4;
+    animation: flowDash 1.5s linear infinite;
+  }
+  @keyframes flowDash {
+    to { stroke-dashoffset: -20; }
+  }
+
+  .data-pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .animate-in { opacity: 1; transform: none; }
+    .flow-path { stroke-dasharray: none; }
+    .data-pulse { animation: none; opacity: 1; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; font-size: 12px; }
+    .container { max-width: 100%; padding: 0; }
+    .hero { background: white; padding: 20px 0; border: none; }
+    .diagram-wrap { box-shadow: none; break-inside: avoid; padding: 12px; }
+    section { margin-bottom: 24px; break-inside: avoid; }
+    .toc { display: none; }
+    .feature:hover { transform: none; }
+    footer { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero animate-in">
+    <h1>MakieDemos 架构文档</h1>
+    <p class="subtitle">
+      基于 Julia 与 CairoMakie 的 12 个出版级透明背景可视化示例集合。
+      每个示例都是独立的场景构造函数，输出 1600×1000 透明 PNG 并附带 JSON 元数据清单。
+    </p>
+    <div class="badges">
+      <span class="badge primary">Julia</span>
+      <span class="badge teal">CairoMakie</span>
+      <span class="badge violet">GLMakie (可选)</span>
+      <span class="badge">12 个 Demo</span>
+      <span class="badge">透明背景 PNG</span>
+      <span class="badge">像素级验证</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc animate-in delay-1">
+    <h3>目录</h3>
+    <ol>
+      <li><a href="#overview">项目概述</a></li>
+      <li><a href="#features">核心特性</a></li>
+      <li><a href="#layered">分层架构图</a></li>
+      <li><a href="#pipeline">渲染流水线图</a></li>
+      <li><a href="#walkthrough">主走查：渲染一个场景</a></li>
+      <li><a href="#modules">模块详解</a></li>
+      <li><a href="#catalog">目录与元数据</a></li>
+      <li><a href="#quality">质量保障</a></li>
+      <li><a href="#deployment">构建与发布</a></li>
+    </ol>
+  </nav>
+
+  <!-- Overview -->
+  <section id="overview">
+    <h2>项目概述</h2>
+    <div class="prose">
+      <p>
+        <strong>MakieDemos</strong> 是一个演示型 Julia 包，专注于展示 <code>CairoMakie</code> 的高级可视化能力。
+        它包含 12 个精心调校的场景，覆盖 2D、3D、统计、流场、矩阵、分子、极坐标、时间线、拓扑和多面板组合等多种图表类型。
+      </p>
+      <p>
+        与普通示例库不同的是，MakieDemos 强调「出版级质量」：统一的设计语言（自定义主题系统）、固定的画布尺寸（1600×1000）、
+        透明背景（便于嵌入幻灯片和文档），以及自动化的像素级质量验证。
+      </p>
+      <p>
+        所有数据均为确定性合成数据——不需要外部数据源，每个 demo 函数内部生成其数据，使项目完全自包含、可复现。
+      </p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <h2>核心特性</h2>
+    <div class="features">
+      <div class="feature animate-in">
+        <div class="icon" style="background:var(--accent-soft);">🎨</div>
+        <h4>统一设计语言</h4>
+        <p>自定义主题系统：INK/MUTED/ACCENT/PALETTE 四色体系 + 透明背景 + 栅格风格。</p>
+      </div>
+      <div class="feature animate-in delay-1">
+        <div class="icon" style="background:var(--teal-soft);">📐</div>
+        <h4>固定出版规格</h4>
+        <p>所有输出严格 1600×1000 像素，透明背景，可直接嵌入文档与演示。</p>
+      </div>
+      <div class="feature animate-in delay-2">
+        <div class="icon" style="background:var(--violet-soft);">🧪</div>
+        <h4>像素级验证</h4>
+        <p>validate_png 检查透明像素比例、可见像素数、彩色像素数，杜绝空白或损坏输出。</p>
+      </div>
+      <div class="feature animate-in delay-3">
+        <div class="icon" style="background:var(--rose-soft);">📋</div>
+        <h4>JSON 清单</h4>
+        <p>每张 PNG 伴随一份 JSON manifest，记录尺寸、像素统计、渲染耗时、后端等元数据。</p>
+      </div>
+      <div class="feature animate-in delay-4">
+        <div class="icon" style="background:var(--amber-soft);">🔍</div>
+        <h4>可搜索目录</h4>
+        <p>catalog.json 提供 intent / family / tags / complexity 元数据，便于检索和筛选。</p>
+      </div>
+      <div class="feature animate-in delay-5">
+        <div class="icon" style="background:var(--accent-soft);">🔄</div>
+        <h4>双后端兼容</h4>
+        <p>场景图与后端解耦：CairoMakie 输出位图，GLMakie 可用于交互式窗口。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layered Architecture Diagram -->
+  <section id="layered">
+    <h2>分层架构</h2>
+    <div class="prose">
+      <p>
+        MakieDemos 采用清晰的四层结构：最上层是<strong>调用入口</strong>（脚本与测试），
+        中间是<strong>领域层</strong>（MakieDemos 模块，承载主题、场景构造、渲染与验证），
+        再下层是<strong>Makie 生态</strong>（场景图 + Cairo 后端），最底层是<strong>产物层</strong>（PNG + JSON）。
+      </p>
+      <p>
+        关键设计原则是「场景函数纯净」——每个 demo 函数只返回一个 Figure 对象，不负责保存、验证或元数据生成。
+        这些横切关注点由 <code>render_demo</code> 统一编排，保证 12 个场景函数保持高度一致的接口。
+      </p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">图 1 · 四层分层架构</div>
+      <svg id="layered-svg" viewBox="0 0 720 440" width="720" height="440" role="img" aria-label="MakieDemos 四层架构图">
+        <!-- Layer 4: Entry Points -->
+        <g class="layer-entry" data-layer="4">
+          <rect x="40" y="20" width="640" height="70" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+          <text x="60" y="42" font-size="12" font-weight="700" fill="#2563eb" text-anchor="start">入口层 Entry</text>
+          <g>
+            <rect x="100" y="52" width="140" height="30" rx="6" fill="white" stroke="#93c5fd" stroke-width="1"/>
+            <text x="170" y="71" font-size="12" fill="#1e40af" text-anchor="middle">scripts/render.jl</text>
+          </g>
+          <g>
+            <rect x="290" y="52" width="140" height="30" rx="6" fill="white" stroke="#93c5fd" stroke-width="1"/>
+            <text x="360" y="71" font-size="12" fill="#1e40af" text-anchor="middle">test/runtests.jl</text>
+          </g>
+          <g>
+            <rect x="480" y="52" width="140" height="30" rx="6" fill="white" stroke="#93c5fd" stroke-width="1"/>
+            <text x="550" y="71" font-size="12" fill="#1e40af" text-anchor="middle">justfile</text>
+          </g>
+        </g>
+
+        <!-- Layer 3: MakieDemos Module -->
+        <g class="layer-module" data-layer="3">
+          <rect x="40" y="110" width="640" height="130" rx="10" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1.5"/>
+          <text x="60" y="132" font-size="12" font-weight="700" fill="#0d9488" text-anchor="start">领域层 Domain · MakieDemos 模块</text>
+
+          <!-- Theme system -->
+          <g>
+            <rect x="60" y="148" width="150" height="80" rx="8" fill="white" stroke="#5eead4" stroke-width="1"/>
+            <text x="135" y="168" font-size="12" font-weight="600" fill="#0f766e" text-anchor="middle">主题系统</text>
+            <text x="135" y="186" font-size="10.5" fill="#64748b" text-anchor="middle">apply_theme!</text>
+            <text x="135" y="201" font-size="10.5" fill="#64748b" text-anchor="middle">header!</text>
+            <text x="135" y="216" font-size="10.5" fill="#64748b" text-anchor="middle">INK / PALETTE</text>
+          </g>
+
+          <!-- Scene constructors -->
+          <g>
+            <rect x="230" y="148" width="260" height="80" rx="8" fill="white" stroke="#5eead4" stroke-width="1"/>
+            <text x="360" y="168" font-size="12" font-weight="600" fill="#0f766e" text-anchor="middle">12 个场景构造函数</text>
+            <text x="360" y="186" font-size="10.5" fill="#64748b" text-anchor="middle">surface_terrain · vector_field · phase_dashboard</text>
+            <text x="360" y="201" font-size="10.5" fill="#64748b" text-anchor="middle">sankey_energy · molecular_scene · gantt_system ...</text>
+            <text x="360" y="216" font-size="10.5" fill="#94a3b8" text-anchor="middle">DEMOS 字典注册</text>
+          </g>
+
+          <!-- Render & Validate -->
+          <g>
+            <rect x="510" y="148" width="150" height="80" rx="8" fill="white" stroke="#5eead4" stroke-width="1"/>
+            <text x="585" y="168" font-size="12" font-weight="600" fill="#0f766e" text-anchor="middle">渲染与验证</text>
+            <text x="585" y="186" font-size="10.5" fill="#64748b" text-anchor="middle">render_all</text>
+            <text x="585" y="201" font-size="10.5" fill="#64748b" text-anchor="middle">render_demo</text>
+            <text x="585" y="216" font-size="10.5" fill="#64748b" text-anchor="middle">validate_png</text>
+          </g>
+        </g>
+
+        <!-- Layer 2: Makie Ecosystem -->
+        <g class="layer-ecosystem" data-layer="2">
+          <rect x="40" y="260" width="640" height="70" rx="10" fill="#faf5ff" stroke="#ddd6fe" stroke-width="1.5"/>
+          <text x="60" y="282" font-size="12" font-weight="700" fill="#7c3aed" text-anchor="start">生态层 Ecosystem · Makie 场景图</text>
+          <g>
+            <rect x="120" y="292" width="120" height="28" rx="6" fill="white" stroke="#c4b5fd" stroke-width="1"/>
+            <text x="180" y="310" font-size="12" fill="#5b21b6" text-anchor="middle">CairoMakie</text>
+          </g>
+          <g>
+            <rect x="300" y="292" width="120" height="28" rx="6" fill="white" stroke="#c4b5fd" stroke-width="1"/>
+            <text x="360" y="310" font-size="12" fill="#5b21b6" text-anchor="middle">Makie Core</text>
+          </g>
+          <g>
+            <rect x="480" y="292" width="120" height="28" rx="6" fill="white" stroke="#c4b5fd" stroke-width="1"/>
+            <text x="540" y="310" font-size="12" fill="#5b21b6" text-anchor="middle">GLMakie (可选)</text>
+          </g>
+        </g>
+
+        <!-- Layer 1: Output Artifacts -->
+        <g class="layer-artifacts" data-layer="1">
+          <rect x="40" y="350" width="640" height="70" rx="10" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+          <text x="60" y="372" font-size="12" font-weight="700" fill="#c2410c" text-anchor="start">产物层 Artifacts</text>
+          <g>
+            <rect x="140" y="382" width="140" height="28" rx="6" fill="white" stroke="#fdba74" stroke-width="1"/>
+            <text x="210" y="400" font-size="12" fill="#9a3412" text-anchor="middle">out/*.png (12张)</text>
+          </g>
+          <g>
+            <rect x="340" y="382" width="140" height="28" rx="6" fill="white" stroke="#fdba74" stroke-width="1"/>
+            <text x="410" y="400" font-size="12" fill="#9a3412" text-anchor="middle">out/*.json (12份)</text>
+          </g>
+          <g>
+            <rect x="540" y="382" width="100" height="28" rx="6" fill="white" stroke="#fdba74" stroke-width="1"/>
+            <text x="590" y="400" font-size="12" fill="#9a3412" text-anchor="middle">catalog.json</text>
+          </g>
+        </g>
+
+        <!-- Connectors -->
+        <g stroke="#94a3b8" stroke-width="1" fill="none" stroke-dasharray="4 3" class="flow-path">
+          <path d="M 360 90 L 360 110"/>
+          <path d="M 360 240 L 360 260"/>
+          <path d="M 360 330 L 360 350"/>
+        </g>
+      </svg>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:#eff6ff;border-color:#bfdbfe;"></div>入口层：脚本、测试、构建</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#f0fdfa;border-color:#99f6e4;"></div>领域层：主题、场景、渲染验证</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#faf5ff;border-color:#ddd6fe;"></div>生态层：Makie 后端</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#fff7ed;border-color:#fed7aa;"></div>产物层：PNG + JSON</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pipeline Diagram -->
+  <section id="pipeline">
+    <h2>渲染流水线</h2>
+    <div class="prose">
+      <p>
+        单个 demo 的渲染过程是一条线性流水线，由 <code>render_demo</code> 函数编排。
+        从主题应用开始，经过场景构造、PNG 保存、像素验证，最终产出 manifest JSON。
+        任何一步失败都会抛出异常，保证不会有半残产物混入输出目录。
+      </p>
+      <p>
+        流水线的关键洞察是「验证即质检」：<code>validate_png</code> 不是可选步骤，而是渲染流程的一部分。
+        它通过三个阈值（透明像素 ≥18%、可见像素 ≥10000、彩色像素 ≥3000）确保输出符合出版级标准。
+      </p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">图 2 · 单 demo 渲染流水线</div>
+      <svg id="pipeline-svg" viewBox="0 0 760 220" width="760" height="220" role="img" aria-label="渲染流水线图">
+        <!-- Step boxes -->
+        <g>
+          <!-- Step 1: apply theme -->
+          <g class="pipe-step" data-step="1">
+            <rect x="20" y="80" width="110" height="60" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+            <text x="75" y="105" font-size="12" font-weight="600" fill="#1e40af" text-anchor="middle">应用主题</text>
+            <text x="75" y="122" font-size="10.5" fill="#3b82f6" text-anchor="middle">apply_theme!</text>
+          </g>
+          <!-- Arrow 1 -->
+          <path d="M 135 110 L 165 110" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+          <!-- Step 2: build figure -->
+          <g class="pipe-step" data-step="2">
+            <rect x="175" y="70" width="130" height="80" rx="8" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1.5"/>
+            <text x="240" y="95" font-size="12" font-weight="600" fill="#065f46" text-anchor="middle">构造场景图</text>
+            <text x="240" y="112" font-size="10.5" fill="#059669" text-anchor="middle">DEMOS[name]()</text>
+            <text x="240" y="127" font-size="10" fill="#6b7280" text-anchor="middle">生成合成数据</text>
+            <text x="240" y="140" font-size="10" fill="#6b7280" text-anchor="middle">返回 Figure</text>
+          </g>
+          <!-- Arrow 2 -->
+          <path d="M 310 110 L 340 110" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+          <!-- Step 3: save PNG -->
+          <g class="pipe-step" data-step="3">
+            <rect x="350" y="80" width="110" height="60" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+            <text x="405" y="105" font-size="12" font-weight="600" fill="#5b21b6" text-anchor="middle">保存 PNG</text>
+            <text x="405" y="122" font-size="10.5" fill="#7c3aed" text-anchor="middle">CairoMakie.save</text>
+          </g>
+          <!-- Arrow 3 -->
+          <path d="M 465 110 L 495 110" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+          <!-- Step 4: validate -->
+          <g class="pipe-step" data-step="4">
+            <rect x="505" y="70" width="130" height="80" rx="8" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5"/>
+            <text x="570" y="95" font-size="12" font-weight="600" fill="#9d174d" text-anchor="middle">像素级验证</text>
+            <text x="570" y="112" font-size="10.5" fill="#db2777" text-anchor="middle">validate_png</text>
+            <text x="570" y="127" font-size="10" fill="#6b7280" text-anchor="middle">透明/可见/彩色</text>
+            <text x="570" y="140" font-size="10" fill="#6b7280" text-anchor="middle">三阈值断言</text>
+          </g>
+          <!-- Arrow 4 -->
+          <path d="M 640 110 L 670 110" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+          <!-- Step 5: manifest -->
+          <g class="pipe-step" data-step="5">
+            <rect x="680" y="80" width="60" height="60" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+            <text x="710" y="105" font-size="12" font-weight="600" fill="#92400e" text-anchor="middle">输出</text>
+            <text x="710" y="122" font-size="10.5" fill="#d97706" text-anchor="middle">JSON</text>
+          </g>
+        </g>
+
+        <!-- Flow indicator: animated dot -->
+        <circle id="flow-dot" cx="30" cy="110" r="5" fill="#2563eb">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 30 110 L 130 110 L 130 110 L 170 110 L 305 110 L 345 110 L 460 110 L 500 110 L 635 110 L 675 110 L 675 110"/>
+        </circle>
+
+        <!-- Arrowhead def -->
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+
+        <!-- Bottom label -->
+        <text x="380" y="190" font-size="11" fill="#94a3b8" text-anchor="middle">render_demo(name, output_dir) — 全程同步，异常即中止</text>
+      </svg>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:#dbeafe;"></div>主题设置</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#d1fae5;"></div>场景构造</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#ede9fe;"></div>文件输出</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#fce7f3;"></div>质量验证</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#fef3c7;"></div>元数据</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Walkthrough -->
+  <section id="walkthrough">
+    <h2>主走查：渲染地形曲面</h2>
+    <div class="prose">
+      <p>
+        我们选择「<strong>渲染地形曲面</strong>」（surface-terrain）作为端到端走查场景。
+        这是 12 个 demo 中最具代表性的 3D 示例，涉及主题系统、数据生成、3D 坐标轴、多重 plot 叠加、Colorbar 和像素验证全链路。
+      </p>
+      <p>
+        走查从命令行执行 <code>julia --project=. scripts/render.jl</code> 开始，到 <code>out/surface-terrain-transparent.json</code> 写入磁盘结束。
+      </p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">图 3 · 主走查：渲染地形曲面</div>
+      <svg id="walkthrough-svg" viewBox="0 0 720 380" width="720" height="380" role="img" aria-label="主走查流程图">
+        <!-- Step 1 -->
+        <g>
+          <rect x="40" y="20" width="200" height="60" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+          <text x="140" y="42" font-size="12" font-weight="700" fill="#1e40af" text-anchor="middle">① 启动渲染脚本</text>
+          <text x="140" y="59" font-size="10.5" fill="#3b82f6" text-anchor="middle">julia scripts/render.jl</text>
+          <text x="140" y="73" font-size="10" fill="#6b7280" text-anchor="middle">加载 MakieDemos 模块</text>
+        </g>
+        <!-- Arrow -->
+        <path d="M 240 50 L 280 50" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow2)"/>
+
+        <!-- Step 2 -->
+        <g>
+          <rect x="290" y="20" width="200" height="60" rx="8" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1.5"/>
+          <text x="390" y="42" font-size="12" font-weight="700" fill="#065f46" text-anchor="middle">② 遍历 DEMOS 字典</text>
+          <text x="390" y="59" font-size="10.5" fill="#059669" text-anchor="middle">render_all → render_demo</text>
+          <text x="390" y="73" font-size="10" fill="#6b7280" text-anchor="middle">对 12 个 key 依次渲染</text>
+        </g>
+        <!-- Arrow down -->
+        <path d="M 390 80 L 390 110" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow2)"/>
+
+        <!-- Step 3 -->
+        <g>
+          <rect x="260" y="120" width="260" height="80" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+          <text x="390" y="142" font-size="12" font-weight="700" fill="#5b21b6" text-anchor="middle">③ 构造 surface-terrain 场景</text>
+          <text x="390" y="160" font-size="10.5" fill="#7c3aed" text-anchor="middle">apply_theme! → surface_terrain()</text>
+          <text x="390" y="176" font-size="10" fill="#6b7280" text-anchor="middle">生成 190×155 网格 + z 值矩阵</text>
+          <text x="390" y="191" font-size="10" fill="#6b7280" text-anchor="middle">Axis3 + surface! + wireframe! + Colorbar</text>
+        </g>
+        <!-- Arrow down -->
+        <path d="M 390 200 L 390 230" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow2)"/>
+
+        <!-- Step 4 -->
+        <g>
+          <rect x="260" y="240" width="260" height="60" rx="8" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5"/>
+          <text x="390" y="262" font-size="12" font-weight="700" fill="#9d174d" text-anchor="middle">④ 保存并验证 PNG</text>
+          <text x="390" y="279" font-size="10.5" fill="#db2777" text-anchor="middle">save → validate_png</text>
+          <text x="390" y="294" font-size="10" fill="#6b7280" text-anchor="middle">三阈值检查：透明/可见/彩色</text>
+        </g>
+        <!-- Arrow -->
+        <path d="M 520 270 L 560 270" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow2)"/>
+
+        <!-- Step 5 -->
+        <g>
+          <rect x="570" y="250" width="130" height="80" rx="8" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="635" y="275" font-size="12" font-weight="700" fill="#92400e" text-anchor="middle">⑤ 写入 manifest</text>
+          <text x="635" y="292" font-size="10.5" fill="#d97706" text-anchor="middle">JSON3.pretty</text>
+          <text x="635" y="307" font-size="10" fill="#6b7280" text-anchor="middle">尺寸/像素统计/耗时</text>
+          <text x="635" y="321" font-size="10" fill="#6b7280" text-anchor="middle">存入 out/ 目录</text>
+        </g>
+
+        <!-- Left side: CLI context -->
+        <g>
+          <rect x="20" y="300" width="180" height="60" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="110" y="322" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">终端输出</text>
+          <text x="110" y="338" font-size="10.5" fill="#64748b" text-anchor="middle">rendered out/surface-...</text>
+          <text x="110" y="352" font-size="10" fill="#94a3b8" text-anchor="true">(1600x1000, ...px)</text>
+        </g>
+        <path d="M 200 330 L 255 330" stroke="#cbd5e1" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+
+        <defs>
+          <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="walkthrough">
+      <div class="step" data-step="1">
+        <h4>启动渲染脚本</h4>
+        <p>用户在项目根目录执行 <code>julia --project=. scripts/render.jl</code>。Julia 加载 <code>Project.toml</code> 环境，预编译 MakieDemos 模块及其依赖（CairoMakie、JSON3、Statistics）。</p>
+      </div>
+      <div class="step" data-step="2">
+        <h4>遍历 DEMOS 字典</h4>
+        <p><code>render_all</code> 读取常量字典 <code>DEMOS</code> 中的 12 个 key，按字典序排列后逐一调用 <code>render_demo(name, output_dir)</code>。每个 demo 独立渲染，互不影响。</p>
+      </div>
+      <div class="step" data-step="3">
+        <h4>构造场景图</h4>
+        <p>以 surface-terrain 为例：先 <code>apply_theme!</code> 设置全局主题（字体、颜色、透明背景），再调用 <code>surface_terrain()</code>——生成 190×155 的网格数据，创建 Axis3 3D 坐标轴，叠加 surface（曲面）和 wireframe（线框），最后添加 Colorbar。返回 Figure 对象。</p>
+      </div>
+      <div class="step" data-step="4">
+        <h4>保存并验证 PNG</h4>
+        <p>调用 CairoMakie 的 <code>save</code> 将 Figure 渲染为 1600×1000 PNG 文件。紧接着执行 <code>validate_png</code>：逐像素统计透明、可见、彩色像素数，与阈值比较。不通过则抛出异常，中断整个渲染流程。</p>
+      </div>
+      <div class="step" data-step="5">
+        <h4>写入 manifest JSON</h4>
+        <p>验证通过后，将尺寸、像素统计、渲染耗时、后端类型等信息组装为字典，通过 JSON3 序列化为同名 .json 文件，与 PNG 并排放置在输出目录中。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module details -->
+  <section id="modules">
+    <h2>模块详解</h2>
+
+    <h3>主题系统</h3>
+    <div class="prose">
+      <p>
+        主题系统是 MakieDemos 视觉一致性的基石。通过一组常量颜色（INK 深墨色、MUTED 辅助灰、ACCENT 强调红、PALETTE 四色调色板）
+        和 <code>apply_theme!</code> 函数，统一设置 Figure、Axis、Colorbar 等所有 Makie 块的默认样式。
+      </p>
+      <p>
+        值得注意的设计选择是<strong>透明背景优先</strong>：Figure 和 Axis 的背景色均设为 <code>:transparent</code>，
+        这意味着生成的 PNG 可以直接叠加在任何背景上（幻灯片、文档、网页），无需额外抠图。
+      </p>
+      <p>
+        <code>header!</code> 是另一个复用组件——它为每个图添加三段式标题（kicker + title + subtitle），
+        确保 12 个 demo 拥有统一的页眉版式。
+      </p>
+    </div>
+
+    <h3>场景构造函数</h3>
+    <div class="prose">
+      <p>
+        12 个场景构造函数遵循同一约定：零参数、返回 Figure 对象、内部生成所有数据。
+        这种「纯净函数」设计使得场景可以被任何上下文复用——CairoMakie 保存为位图，GLMakie 打开交互窗口，
+        或者嵌入到更大的布局中。
+      </p>
+      <p>
+        场景按可视化家族可分为六大类：
+      </p>
+      <table>
+        <thead>
+          <tr><th>家族</th><th>包含场景</th><th>典型元素</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>3D 空间</td><td>surface-terrain, molecular-scene</td><td>Axis3, meshscatter, surface</td></tr>
+          <tr><td>流场与矢量</td><td>vector-field</td><td>arrows2d, contour, 流线</td></tr>
+          <tr><td>多面板仪表盘</td><td>phase-dashboard, uncertainty-forecast</td><td>GridLayout, band, 多轴联动</td></tr>
+          <tr><td>矩阵与多元</td><td>correlation-matrix, parallel-coordinates</td><td>heatmap, 标注文字, 平行坐标</td></tr>
+          <tr><td>流程图</td><td>sankey-energy, topology-graph</td><td>ribbon, 网络布局, poly</td></tr>
+          <tr><td>极坐标与时间</td><td>polar-climate, gantt-system</td><td>PolarAxis, barplot, 甘特图</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>渲染与验证</h3>
+    <div class="prose">
+      <p>
+        <code>render_demo</code> 是整个项目的编排核心。它串联主题应用、场景构造、文件保存、质量验证和元数据输出。
+        而 <code>render_all</code> 只是对 <code>render_demo</code> 的简单映射。
+      </p>
+      <p>
+        <code>validate_png</code> 采用「像素三阈值」策略：
+      </p>
+      <ul style="padding-left:20px;margin-bottom:14px;color:#334155;">
+        <li><strong>透明像素 ≥ 18%</strong>：确保背景确实透明，而非意外填充了白色。</li>
+        <li><strong>可见像素 ≥ 10,000</strong>：确保图像不是空的或几乎空白。</li>
+        <li><strong>彩色像素 ≥ 3,000</strong>：确保有实际的图表内容（灰度差 > 0.10）。</li>
+      </ul>
+      <p>
+        这是一种轻量但有效的「冒烟测试」——不验证内容正确性，但能捕获 90% 的渲染故障（空白图、全黑图、背景不透明等）。
+      </p>
+    </div>
+  </section>
+
+  <!-- Catalog -->
+  <section id="catalog">
+    <h2>目录与元数据</h2>
+    <div class="prose">
+      <p>
+        <code>catalog.json</code> 是项目的「目录卡」，为每个 demo 提供结构化元数据：
+        <code>id</code>（唯一标识）、<code>use</code>（用途描述）、<code>family</code>（所属家族）、
+        <code>question</code>（该图回答的问题）、<code>complexity</code>（复杂度）和 <code>tags</code>（标签数组）。
+      </p>
+      <p>
+        这种设计使项目不仅是代码集合，更是可检索的可视化模式库。下游工具可以通过解析 catalog.json
+        实现搜索、筛选、按家族分组展示等功能，而无需解析 Julia 源码。
+      </p>
+      <p>
+        值得注意的是，catalog.json 与 DEMOS 字典是<strong>双源冗余</strong>的——demo 列表同时存在于 Julia 代码和 JSON 文件中。
+        这是有意为之：代码面向运行时，JSON 面向工具链和静态站点生成，两者通过测试中的数量断言（≥12 个）保持同步。
+      </p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">图 4 · 目录元数据结构</div>
+      <svg id="catalog-svg" viewBox="0 0 720 260" width="720" height="260" role="img" aria-label="目录元数据结构图">
+        <!-- catalog.json -->
+        <g>
+          <rect x="40" y="40" width="180" height="180" rx="10" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+          <text x="130" y="65" font-size="13" font-weight="700" fill="#92400e" text-anchor="middle">catalog.json</text>
+          <text x="130" y="85" font-size="11" fill="#b45309" text-anchor="middle">[ 12 个条目数组 ]</text>
+          <line x1="60" y1="98" x2="200" y2="98" stroke="#fde68a" stroke-width="1"/>
+          <text x="70" y="116" font-size="10.5" fill="#78350f" text-anchor="start">id: "surface-terrain"</text>
+          <text x="70" y="133" font-size="10.5" fill="#78350f" text-anchor="start">family: "3d surface"</text>
+          <text x="70" y="150" font-size="10.5" fill="#78350f" text-anchor="start">question: "How do..."</text>
+          <text x="70" y="167" font-size="10.5" fill="#78350f" text-anchor="start">complexity: "advanced"</text>
+          <text x="70" y="184" font-size="10.5" fill="#78350f" text-anchor="start">tags: ["surface","3d",...]</text>
+          <text x="70" y="201" font-size="10.5" fill="#78350f" text-anchor="start">use: "3d surface"</text>
+        </g>
+
+        <!-- Arrow -->
+        <path d="M 220 130 L 280 130" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow3)"/>
+
+        <!-- Consumers -->
+        <g>
+          <!-- README gallery -->
+          <rect x="300" y="30" width="170" height="50" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+          <text x="385" y="52" font-size="12" font-weight="600" fill="#1e40af" text-anchor="middle">README 展示</text>
+          <text x="385" y="69" font-size="10.5" fill="#3b82f6" text-anchor="middle">图片网格画廊</text>
+
+          <!-- Static site -->
+          <rect x="300" y="105" width="170" height="50" rx="8" fill="#d1fae5" stroke="#6ee7b7" stroke-width="1.5"/>
+          <text x="385" y="127" font-size="12" font-weight="600" fill="#065f46" text-anchor="middle">静态站点生成</text>
+          <text x="385" y="144" font-size="10.5" fill="#059669" text-anchor="middle">按 family / tag 分组</text>
+
+          <!-- Search tool -->
+          <rect x="300" y="180" width="170" height="50" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+          <text x="385" y="202" font-size="12" font-weight="600" fill="#5b21b6" text-anchor="middle">搜索与检索</text>
+          <text x="385" y="219" font-size="10.5" fill="#7c3aed" text-anchor="middle">question / tags 匹配</text>
+        </g>
+
+        <!-- DEMOS dict -->
+        <g>
+          <rect x="530" y="60" width="160" height="140" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="1.5"/>
+          <text x="610" y="85" font-size="13" font-weight="700" fill="#9d174d" text-anchor="middle">DEMOS 字典</text>
+          <text x="610" y="105" font-size="11" fill="#be185d" text-anchor="middle">(Julia 运行时)</text>
+          <line x1="550" y1="118" x2="670" y2="118" stroke="#fbcfe8" stroke-width="1"/>
+          <text x="550" y="136" font-size="10.5" fill="#831843" text-anchor="start">"surface-terrain" =&gt; fn</text>
+          <text x="550" y="153" font-size="10.5" fill="#831843" text-anchor="start">"vector-field" =&gt; fn</text>
+          <text x="550" y="170" font-size="10.5" fill="#831843" text-anchor="start">... 共 12 个</text>
+          <text x="550" y="187" font-size="10" fill="#9d174d" text-anchor="start">render_all 遍历</text>
+        </g>
+
+        <!-- dashed line between catalog and DEMOS (sync) -->
+        <path d="M 220 80 Q 300 60 530 80" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="5 4"/>
+        <text x="375" y="56" font-size="10" fill="#d97706" text-anchor="middle">数量同步断言 (≥12)</text>
+
+        <defs>
+          <marker id="arrow3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Quality -->
+  <section id="quality">
+    <h2>质量保障</h2>
+    <div class="prose">
+      <p>
+        MakieDemos 的质量保障体系由三层防线构成：<strong>渲染时验证</strong>（validate_png）、
+        <strong>测试时断言</strong>（runtests.jl）和<strong>目录同步</strong>（catalog.json 数量校验）。
+      </p>
+      <p>
+        测试套件在临时目录中全量渲染 12 个 demo，然后逐一断言：宽度 = 1600、高度 = 1000、
+        透明像素 &gt; 280,000（约 17.5%，略低于代码内 18% 阈值，留误差余量）、
+        可见像素 &gt; 10,000，以及对应的 JSON manifest 文件存在。
+      </p>
+      <p>
+        这种「端到端像素测试」比单元测试更有意义——可视化代码的 bug 往往不体现在函数返回值上，
+        而体现在输出图像的视觉缺陷上。通过量化像素统计，可以在不做图像比对的情况下捕获大部分故障。
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>质量层</th><th>机制</th><th>覆盖范围</th><th>失败处理</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>L1 渲染时验证</td><td>validate_png 三阈值</td><td>每个 demo 输出</td><td>抛出 ErrorException</td></tr>
+        <tr><td>L2 测试断言</td><td>@test 尺寸与像素</td><td>全量 12 个 demo</td><td>测试失败，标记红</td></tr>
+        <tr><td>L3 目录同步</td><td>length(paths) ≥ 12</td><td>catalog ↔ DEMOS</td><td>测试失败，提示缺漏</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Build & deployment -->
+  <section id="deployment">
+    <h2>构建与发布</h2>
+    <div class="prose">
+      <p>
+        项目使用 <code>just</code> 作为统一构建入口，<code>justfile</code> 提供三个 recipe：
+      </p>
+      <ul style="padding-left:20px;margin-bottom:14px;color:#334155;">
+        <li><code>just render</code>：运行渲染脚本，生成所有 PNG 和 JSON 到 out/ 目录。</li>
+        <li><code>just test</code>：运行 Julia 测试套件，执行端到端像素级验证。</li>
+        <li><code>just instantiate</code>：实例化并预编译所有依赖，用于首次设置或 CI 缓存预热。</li>
+      </ul>
+      <p>
+        依赖管理通过 Julia 的标准 <code>Project.toml</code> + <code>Manifest.toml</code> 机制实现，
+        确保可复现的环境。核心依赖只有四个：CairoMakie（渲染后端）、GLMakie（可选交互后端）、
+        JSON3（清单序列化）和 Statistics（统计计算）。
+      </p>
+      <p>
+        作为演示项目，MakieDemos 不发布到 Julia 注册表，也不安装到系统路径。
+        它的「产物」就是 out/ 目录下的 PNG 和 JSON 文件，可以直接嵌入文档、上传到静态站点，
+        或作为其他可视化项目的参考实现。
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p>MakieDemos · 架构文档 · 自动生成</p>
+  </footer>
+
+</div>
+
+<script>
+  // Intersection observer for scroll-triggered animations
+  // If JS fails entirely, CSS animate-in class handles graceful fallback (opacity:0 is fine — the page is still readable via print/reduced-motion)
+  (function() {
+    // Check if reduced motion is preferred
+    var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) return;
+
+    // Add animation class to elements when they enter viewport
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // Observe feature cards
+    document.querySelectorAll('.feature').forEach(function(el) {
+      el.style.opacity = '0';
+      observer.observe(el);
+    });
+
+    // Observe diagram SVGs
+    document.querySelectorAll('.diagram-wrap').forEach(function(el) {
+      observer.observe(el);
+    });
+
+    // Observe steps
+    document.querySelectorAll('.step').forEach(function(el, i) {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+      el.style.transform = 'translateX(-8px)';
+      var stepObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            setTimeout(function() {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateX(0)';
+            }, i * 80);
+            stepObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      stepObs.observe(el);
+    });
+  })();
+</script>
+
+</body>
+</html>

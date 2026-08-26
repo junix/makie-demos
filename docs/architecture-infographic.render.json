@@ -1,0 +1,50 @@
+{
+  "project": "makie-demos",
+  "type": "architecture-infographic",
+  "language": "zh-CN",
+  "thesis": "makie-demos 是一个基于 CairoMakie 的 12 幅发布级透明 PNG 演示集合，具备统一主题系统、DEMOS 字典注册、像素级验证流水线与 JSON 清单输出。",
+  "narrative_sections": [
+    "01 · 项目定位：主题系统 → 场景函数 → 渲染 → 验证 四环节",
+    "02 · 主题系统：apply_theme!/header!/Axis/Colorbar 与 GLMakie 备选后端",
+    "03 · 十二场景四大家族：3D/体、统计/矩阵、流/网络、时间/极坐标；DEMOS 字典 + catalog.json 元数据",
+    "04 · 渲染与验证流水线：apply_theme → 构建场景图 → save PNG → validate_png 三门槛 → JSON manifest",
+    "05 · 入口与产物：scripts/render.jl、out/ 目录、test/runtests.jl"
+  ],
+  "source_files": [
+    "src/MakieDemos.jl",
+    "scripts/render.jl",
+    "catalog.json",
+    "test/runtests.jl",
+    "README.md"
+  ],
+  "render": {
+    "engine": "xelatex + tikz",
+    "engine_version": "XeTeX 3.141592653-2.6-0.999995 (TeX Live 2023)",
+    "backend": "Cairo/PDF via pdftocairo for SVG/PNG",
+    "build_command": "xelatex -interaction=nonstopmode architecture-infographic.tex"
+  },
+  "artifacts": {
+    "tex": {
+      "filename": "architecture-infographic.tex",
+      "size_bytes": 18573,
+      "sha256_prefix": "e9f5d55e5897c20f"
+    },
+    "pdf": {
+      "filename": "architecture-infographic.pdf",
+      "size_bytes": 112487,
+      "sha256_prefix": "8acaf17d0c1a4a33"
+    },
+    "svg": {
+      "filename": "architecture-infographic.svg",
+      "size_bytes": 1044199,
+      "sha256_prefix": "1994afc4e3a9ad77"
+    },
+    "png": {
+      "filename": "architecture-infographic.png",
+      "size_bytes": 425223,
+      "sha256_prefix": "57a5e191130c155b",
+      "width": 1231,
+      "height": 1793
+    }
+  }
+}

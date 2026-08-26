@@ -1,0 +1,377 @@
+% makie-demos 架构信息图
+%
+% 主题：一个由 12 个发布级绘图组成的 CairoMakie 演示集合，从主题系统、场景函数、渲染流水线到像素级验证的完整叙事。
+% 布局：纵向叙事，四个章节依次为——定位 → 主题系统 → 12 个场景家族 → 渲染与验证流水线 → 产物目录。
+% 语言：简体中文，保留项目名称与代码符号保持英文。
+\documentclass[border=12pt,varwidth=20cm]{standalone}
+\usepackage[UTF8,fontset=none]{ctex}
+\IfFontExistsTF{Source Han Serif SC}{
+  \setmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setCJKmainfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+  \setCJKsansfont[BoldFont={Source Han Serif SC Bold}]{Source Han Serif SC}
+}{
+  \PackageWarningNoLine{tikz-infographic}{Source Han Serif SC not found; using Fandol}
+  \setCJKmainfont[BoldFont={FandolSong-Bold}]{FandolSong-Regular}
+  \setCJKsansfont[BoldFont={FandolHei-Bold}]{FandolHei-Regular}
+}
+\IfFontExistsTF{Sarasa Mono SC}{
+  \setmonofont{Sarasa Mono SC}
+  \setCJKmonofont{Sarasa Mono SC}
+}{
+  \PackageWarningNoLine{tikz-infographic}{Sarasa Mono SC not found; using TeX defaults}
+  \setmonofont{Latin Modern Mono}
+  \setCJKmonofont{FandolFang-Regular}
+}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,backgrounds,calc,fit,positioning,shapes.geometric}
+\pgfdeclarelayer{edge layer}
+\pgfdeclarelayer{bgdeep}
+\pgfsetlayers{bgdeep,background,edge layer,main}
+
+% ── Semantic palette ────────────────────────────────────────────────────────
+\definecolor{Paper}{HTML}{F7F4EE}
+\definecolor{Ink}{HTML}{141B26}     % 主文字
+\definecolor{Slate}{HTML}{5D6873}     % 次文字
+\definecolor{Fog}{HTML}{D9E1E8}       % 分隔与浅带
+\definecolor{Ocean}{HTML}{2B5D7A}      % 主强调
+\definecolor{Teal}{HTML}{2A9D8F}       % 次强调/入口
+\definecolor{Mint}{HTML}{DDF2EC}
+\definecolor{Coral}{HTML}{E76F51}       % 警告/异常
+\definecolor{Gold}{HTML}{E9C46A}        % 产物/输出
+\definecolor{Plum}{HTML}{6B4E71}         % 结构/家族
+\definecolor{Amber}{HTML}{F4A261}      % 验证
+
+% 四大图家族色（与项目 PALETTE 四色对应）
+\definecolor{FamA}{HTML}{54D6C9}  % 3D/体可视化
+\definecolor{FamB}{HTML}{7B9BFF}  % 统计/矩阵
+\definecolor{FamC}{HTML}{FF7093}  % 流/网络
+\definecolor{FamD}{HTML}{FFD166}  % 时间/极坐标
+
+\tikzset{
+  every node/.style={font=\rmfamily},
+  % ── 主叙事带 ──
+  spine/.style={draw=Fog, line width=5.4mm, line cap=butt, line join=round},
+  stage/.style={
+    circle, draw=Ocean, fill=Ocean, text=white, inner sep=0pt,
+    minimum size=7.6mm, font=\rmfamily\scriptsize\bfseries
+  },
+  % ── 模块/卡片 ──
+  module/.style={
+    draw=Ocean!35, fill=white, rounded corners=2mm, line width=.75pt,
+    minimum width=30mm, minimum height=11mm, align=center,
+    font=\rmfamily\footnotesize\bfseries, text=Ink
+  },
+  % 场景小方块（12 个 demo 的入口）
+  scene/.style={
+    draw=#1!55, fill=#1!12, rounded corners=1.2mm, line width=.65pt,
+    minimum width=22mm, minimum height=9mm, align=center,
+    font=\rmfamily\scriptsize\bfseries, text=Ink, inner sep=1.2mm
+  },
+  scene/.default={Ocean},
+  % ── 连线 ──
+  call/.style={
+    -{Latex[length=2mm,width=1.5mm]}, draw=Ocean,
+    line width=1pt, rounded corners=2mm
+  },
+  flow/.style={
+    -{Latex[length=2mm,width=1.5mm]}, draw=Teal,
+    line width=1pt, rounded corners=2mm
+  },
+  verify/.style={
+    -{Latex[length=2mm,width=1.5mm]}, draw=Amber,
+    densely dashed, line width=.9pt, rounded corners=2mm
+  },
+  boundary/.style={draw=Slate!35, dash pattern=on 2pt off 2.4pt, line width=.6pt},
+  family-rule/.style={draw=Plum!35, line width=.4pt, densely dotted},
+  % ── 文字风格 ──
+  stage-label/.style={font=\rmfamily\footnotesize\bfseries, text=Ink},
+  edge-label/.style={font=\rmfamily\scriptsize, text=Slate},
+  terminal/.style={font=\rmfamily\scriptsize\bfseries, text=Ocean},
+  note/.style={font=\rmfamily\scriptsize, text=Slate},
+  kicker/.style={font=\rmfamily\scriptsize\bfseries, text=Teal},
+  pill/.style={
+    rounded corners=2.4mm, fill=Mint, text=Ocean,
+    inner xsep=2.6mm, inner ysep=1mm,
+    font=\rmfamily\scriptsize\bfseries
+  },
+  pill-amber/.style={
+    rounded corners=2.4mm, fill=Gold!50, text=Amber!80!black,
+    inner xsep=2.6mm, inner ysep=1mm,
+    font=\rmfamily\scriptsize\bfseries
+  },
+  family-tag/.style={
+    rounded corners=1.4mm, fill=#1!30, text=Ink,
+    inner xsep=2mm, inner ysep=.8mm,
+    font=\rmfamily\scriptsize\bfseries
+  },
+  family-tag/.default={Ocean},
+  backed-label/.style={edge-label, fill=Paper, inner sep=1.5pt}
+}
+
+\begin{document}
+\setlength{\parindent}{0pt}
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+% ── 画布背景 ──
+\begin{pgfonlayer}{bgdeep}
+  \fill[Paper,rounded corners=2.5mm] (-.6,0.2) rectangle (19.8,27.8);
+\end{pgfonlayer}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 01 · 标题区
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,27.3) {MAKIE-DEMOS · 架构信息图};
+\node[anchor=west,font=\rmfamily\Large\bfseries,text=Ink]
+  at (0,26.7) {十二幅发布级透明 PNG 图的生成与验证体系};
+\node[note,anchor=west] at (0,26.15)
+  {基于 CairoMakie 的场景图库，覆盖 2D/3D、统计、流场、矩阵、分子、极坐标、时间线与拓扑。};
+\node[pill,anchor=east] at (19.4,26.7) {12 场景 · 透明背景 · 像素级校验};
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 02 · 整体定位（顶部小总览）
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,24.9) {01 · 项目定位};
+\node[stage-label,anchor=west] at (0,24.35) {从主题系统 → 场景函数 → 渲染流水线 → 验证闭环};
+
+% 四个环节的横向流程带（简化，为细节部分作铺垫）
+\node[module,minimum width=36mm] (src) at (2.8,23.35) {主题系统};
+\node[module,minimum width=36mm] (scn) at (7.6,23.35) {12 个场景函数};
+\node[module,minimum width=36mm] (rdr) at (12.4,23.35) {CairoMakie 渲染};
+\node[module,minimum width=36mm] (val) at (17.2,23.35) {像素级验证};
+
+\begin{pgfonlayer}{edge layer}
+  \draw[call] (src.east) -- (scn.west);
+  \draw[call] (scn.east) -- (rdr.west);
+  \draw[verify] (rdr.east) -- (val.west);
+\end{pgfonlayer}
+
+\node[note,anchor=west] at (0.5,22.55)
+  {统一主题注入每幅场景；渲染输出 1600×1000 透明 PNG，并通过三道像素门槛。};
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 03 · 主题与风格系统
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,21.4) {02 · 主题系统};
+\node[stage-label,anchor=west] at (0,20.85) {apply\_theme!() 统一定义字型、色板、轴样式};
+
+% 主题系统：左侧色块+色板
+\node[module,minimum width=42mm,minimum height=24mm,align=left,text width=40mm,inner xsep=2mm]
+  (theme) at (3.0,19.65) {\textbf{主题常量}\\[3pt]
+  {\scriptsize\texttt{INK / MUTED / ACCENT / GRID}}\\[2pt]
+  {\scriptsize\texttt{PALETTE}（4 色系）}\\[4pt]
+  字体大小 19pt\\透明背景\\网格与色带\\
+  };
+
+% 四个颜色条
+\fill[FamA] (1.0,18.95) rectangle (1.7,19.25);
+\fill[FamB] (1.8,18.95) rectangle (2.5,19.25);
+\fill[FamC] (2.6,18.95) rectangle (3.3,19.25);
+\fill[FamD] (3.4,18.95) rectangle (4.1,19.25);
+\node[note,anchor=west] at (4.3,19.08) {\scriptsize 4 家族色};
+
+% header!() 头部函数
+\node[module,minimum width=42mm,minimum height=24mm,align=left,text width=40mm,inner xsep=2mm]
+  (header) at (8.0,19.65) {\textbf{header!() 头部布局}\\[3pt]
+  {\scriptsize kicker · 标题 · 副标题}\\[2pt]
+  {\scriptsize 三行统一排版}\\[4pt]
+  每幅场景共享一致的\\标题节奏；\\
+  };
+
+% 应用路径
+\node[module,minimum width=42mm,minimum height=24mm,align=left,text width=40mm,inner xsep=2mm]
+  (axis) at (13.0,19.65) {\textbf{坐标轴与色条}\\[3pt]
+  {\scriptsize Axis / Axis3 / PolarAxis}\\[2pt]
+  {\scriptsize Colorbar / Legend}\\[4pt]
+  网格、刻度、标签\\
+  色标全部继承主题色\\
+  };
+
+% 右侧：GLMakie 备选
+\node[module,minimum width=30mm,minimum height=24mm,align=center]
+  (glmakie) at (17.2,19.65) {\textbf{GLMakie}\\[4pt]
+  {\scriptsize 同一场景图}\\[2pt]
+  {\scriptsize 交互窗口}\\[2pt]
+  {\scriptsize 备选后端}
+  };
+\node[note,anchor=center,text width=28mm] at (17.2,18.6)
+  {\scriptsize CairoMakie 做主输出，\\GLMakie 做交互演示};
+
+\begin{pgfonlayer}{edge layer}
+  \draw[call] (theme.east) -- (header.west);
+  \draw[call] (header.east) -- (axis.west);
+  \draw[flow] (axis.north) -- ++(0,1.4) -| (glmakie.north);
+\end{pgfonlayer}
+
+\node[edge-label,anchor=south] at (15.1,21.1) {\scriptsize 同一场景图};
+\node[note,anchor=west] at (0.5,18.15)
+  {主题系统确保 1 处定义、1 处修改；所有场景继承一致的视觉语言，维持可读层级。};
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 04 · 12 个场景（四大家族
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,16.9) {03 · 十二场景 · 四大家族};
+\node[stage-label,anchor=west] at (0,16.35) {每个 DEMOS 字典统一注册，render\_all 批量输出};
+
+% 四大家族：3D/体、统计/矩阵、流/网络、时间/极坐标
+% 家族 A：3D 与体可视化
+\node[family-tag=FamA,anchor=west] at (0.2,15.6) {家族 A · 3D 与体可视化};
+\node[scene=FamA] (a1) at (2.0,14.6) {surface-terrain\\[-3pt]{\scriptsize 折叠地形 3D 曲面}};
+\node[scene=FamA] (a2) at (5.2,14.6) {volume-slices\\[-3pt]{\scriptsize 体层切片层析}};
+\node[scene=FamA] (a3) at (8.4,14.6) {molecular-scene\\[-3pt]{\scriptsize 分子几何键网络}};
+
+% 家族 B：统计与矩阵
+\node[family-tag=FamB,anchor=west] at (0.2,13.2) {家族 B · 统计与矩阵分析};
+\node[scene=FamB] (b1) at (2.0,12.2) {correlation-matrix\\[-3pt]{\scriptsize 14×14 相关矩阵}};
+\node[scene=FamB] (b2) at (5.2,12.2) {parallel-coordinates\\[-3pt]{\scriptsize 平行坐标多变量}};
+\node[scene=FamB] (b3) at (8.4,12.2) {phase-dashboard\\[-3pt]{\scriptsize 动力系统四视图}};
+
+% 家族 C：流与网络
+\node[family-tag=FamC,anchor=west] at (0.2,10.8) {家族 C · 流场与网络拓扑};
+\node[scene=FamC] (c1) at (2.0,9.8) {vector-field\\[-3pt]{\scriptsize 涡旋与矢量场}};
+\node[scene=FamC] (c2) at (5.2,9.8) {sankey-energy\\[-3pt]{\scriptsize 能源桑基流}};
+\node[scene=FamC] (c3) at (8.4,9.8) {topology-graph\\[-3pt]{\scriptsize 分层计算拓扑}};
+
+% 家族 D：时间与极坐标
+\node[family-tag=FamD,anchor=west] at (0.2,8.4) {家族 D · 时间与极坐标};
+\node[scene=FamD] (d1) at (2.0,7.4) {uncertainty-forecast\\[-3pt]{\scriptsize 集合预报扇形带}};
+\node[scene=FamD] (d2) at (5.2,7.4) {gantt-system\\[-3pt]{\scriptsize 任务甘特图}};
+\node[scene=FamD] (d3) at (8.4,7.4) {polar-climate\\[-3pt]{\scriptsize 季节极坐标轮}};
+
+% 右侧：DEMOS 字典与 catalog
+\node[module,minimum width=38mm,minimum height=48mm,align=left,text width=36mm,inner xsep=2mm]
+  (demos) at (13.8,11.3) {\textbf{DEMOS 字典}\\[4pt]
+  {\scriptsize\texttt{Dict\{name => function\}}}\\[4pt]
+  \begin{tabular}{rl}
+  \tiny 01 & \tiny surface-terrain\\
+  \tiny 02 & \tiny vector-field\\
+  \tiny 03 & \tiny phase-dashboard\\
+  \tiny 04 & \tiny uncertainty-forecast\\
+  \tiny 05 & \tiny correlation-matrix\\
+  \tiny 06 & \tiny parallel-coordinates\\
+  \tiny 07 & \tiny sankey-energy\\
+  \tiny 08 & \tiny volume-slices\\
+  \tiny 09 & \tiny molecular-scene\\
+  \tiny 10 & \tiny polar-climate\\
+  \tiny 11 & \tiny gantt-system\\
+  \tiny 12 & \tiny topology-graph\\
+  \end{tabular}\\[6pt]
+  {\scriptsize render\_all 批量调用全部渲染}\\
+  {\scriptsize render\_demo 单例渲染}
+  };
+
+\node[module,minimum width=38mm,minimum height=18mm,align=left,text width=36mm,inner xsep=2mm]
+  (catalog) at (17.5,11.3) {\textbf{catalog.json}\\[4pt]
+  {\scriptsize 每个 demo 的元数据：\\[-2pt]
+  \begin{itemize}
+    \item[\tiny\textbullet] id / use / family
+    \item[\tiny\textbullet] question
+    \item[\tiny\textbullet] complexity
+    \item[\tiny\textbullet] tags
+  \end{itemize}}
+  };
+
+\begin{pgfonlayer}{edge layer}
+  % 12 个场景 -> DEMOS 字典
+  \draw[call] (a3.east) -- ++(1.0,0) |- ($(demos.west)+(0,2.5)$);
+  \draw[call] (b3.east) -- ++(1.0,0) -- (demos.west);
+  \draw[call] (c3.east) -- ++(1.0,0) -- (demos.west);
+  \draw[call] (d3.east) -- ++(1.0,0) |- ($(demos.west)+(0,-2.5)$);
+  \draw[call] (demos.east) -- (catalog.west);
+\end{pgfonlayer}
+
+\node[edge-label,anchor=south] at (11.5,13.8) {\scriptsize 注册};
+\node[edge-label,anchor=south] at (15.7,11.8) {\scriptsize 元数据索引};
+
+\node[note,anchor=west] at (0.5,6.4)
+  {每个场景都是独立函数，共享统一主题，输出透明 PNG；catalog 提供搜索元数据与家族归属。};
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 05 · 渲染与验证流水线
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,5.1) {04 · 渲染与验证流水线};
+\node[stage-label,anchor=west] at (0,4.55) {render\_demo -> save -> validate\_png -> manifest JSON};
+
+% 五个环节：apply_theme -> figure -> save -> validate -> manifest
+\node[stage] (p1) at (1.6,3.3) {01};
+\node[stage] (p2) at (4.8,3.3) {02};
+\node[stage] (p3) at (8.0,3.3) {03};
+\node[stage] (p4) at (11.2,3.3) {04};
+\node[stage] (p5) at (14.4,3.3) {05};
+
+\node[stage-label,anchor=south] at (1.6,3.85) {应用主题};
+\node[stage-label,anchor=south] at (4.8,3.85) {构建场景图};
+\node[stage-label,anchor=south] at (8.0,3.85) {保存 PNG};
+\node[stage-label,anchor=south] at (11.2,3.85) {像素级校验};
+\node[stage-label,anchor=south] at (14.4,3.85) {生成清单};
+
+\begin{pgfonlayer}{edge layer}
+  \draw[spine] (0.9,3.3) -- (p1);
+  \draw[spine] (p1) -- (p2);
+  \draw[spine] (p2) -- (p3);
+  \draw[spine] (p3) -- (p4);
+  \draw[spine] (p4) -- (p5);
+  \draw[spine] (p5) -- (15.5,3.3);
+\end{pgfonlayer}
+
+\node[terminal,anchor=east] at (0.9,3.3) {demo 名};
+\node[terminal,anchor=west] at (15.5,3.3) {PNG + JSON};
+
+% validate_png 三门槛
+\node[module,minimum width=38mm,minimum height=22mm,align=left,text width=36mm,inner xsep=2mm]
+  (val-box) at (17.4,3.8) {\textbf{validate\_png 三道门槛}\\[3pt]
+  {\scriptsize\begin{itemize}
+    \item[\tiny\textbullet] 透明像素 $\ge 18\%$
+    \item[\tiny\textbullet] 可见像素 $\ge 10{,}000$
+    \item[\tiny\textbullet] 彩色像素 $\ge 3{,}000$
+  \end{itemize}}
+  \vspace{2pt}
+  {\tiny 失败则抛出异常，中断渲染流水线}
+  };
+\node[pill-amber,anchor=north] at (17.4,2.4) {失败则抛出异常中断};
+
+\begin{pgfonlayer}{edge layer}
+  \draw[verify] (p4.east) -- (val-box.west);
+  \draw[call] (p5.north) -- ++(0,0.6) -| (val-box.north);
+\end{pgfonlayer}
+
+\node[note,anchor=west] at (0.5,1.55)
+  {每幅输出附带 JSON 清单记录尺寸、透明/可见/彩色像素数、渲染耗时、后端、数据来源。};
+
+% ═══════════════════════════════════════════════════════════════════════════
+% 06 · 产出与入口
+% ═══════════════════════════════════════════════════════════════════════════
+\node[kicker,anchor=west] at (0,0.6) {05 · 入口与产物};
+\node[stage-label,anchor=west] at (0,0.05) {scripts/render.jl 一键渲染全部};
+
+\node[module,minimum width=50mm,minimum height=14mm,align=left,text width=48mm,inner xsep=2mm]
+  (entry) at (3.0,-0.75) {\textbf{入口脚本}\\[2pt]
+  {\scriptsize\texttt{julia --project=. scripts/render.jl}}\\[2pt]
+  {\scriptsize\texttt{julia --project=. -e 'using Pkg; Pkg.test()'}}
+  };
+
+\node[module,minimum width=50mm,minimum height=14mm,align=left,text width=48mm,inner xsep=2mm]
+  (outdir) at (9.0,-0.75) {\textbf{输出目录}\\[2pt]
+  {\scriptsize\texttt{out/*-transparent.png}}\\
+  {\scriptsize\texttt{out/*-transparent.json}}\\
+  };
+
+\node[module,minimum width=50mm,minimum height=14mm,align=left,text width=48mm,inner xsep=2mm]
+  (tests) at (15.0,-0.75) {\textbf{测试}\\[2pt]
+  {\scriptsize\texttt{test/runtests.jl}}\\
+  {\scriptsize 12 个场景全部可渲染\\[-1pt]
+  {\scriptsize 并通过像素校验}}
+  };
+
+\begin{pgfonlayer}{edge layer}
+  \draw[call] (entry.east) -- (outdir.west);
+  \draw[call] (outdir.east) -- (tests.west);
+\end{pgfonlayer}
+
+% 底部来源
+\node[note,anchor=south east] at (19.4,0.05)
+  {数据来源：MakieDemos.jl / scripts/render.jl / catalog.json};
+
+\end{tikzpicture}
+\end{document}
