@@ -289,14 +289,14 @@
 
   .flow-path {
     stroke-dasharray: 6 4;
-    animation: flowDash 1.5s linear infinite;
+    animation: flowDash 1.5s linear 3;
   }
   @keyframes flowDash {
     to { stroke-dashoffset: -20; }
   }
 
   .data-pulse {
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out 3;
   }
 
   /* Reduced motion */
@@ -1130,7 +1130,7 @@
 
         <!-- dashed line between catalog and DEMOS (sync) -->
         <path d="M 220 80 Q 300 60 530 80" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="5 4"/>
-        <text x="375" y="56" font-size="10" fill="#d97706" text-anchor="middle">数量同步断言 (≥12)</text>
+        <text x="375" y="95" font-size="10" fill="#d97706" text-anchor="middle">数量同步断言 (≥12)</text>
 
         <defs>
           <marker id="arrow3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
@@ -1203,7 +1203,7 @@
 
 </div>
 
-<script>
+<script data-doc-motion-extension>
   // Intersection observer for scroll-triggered animations
   // If JS fails entirely, CSS animate-in class handles graceful fallback (opacity:0 is fine — the page is still readable via print/reduced-motion)
   (function() {
