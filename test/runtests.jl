@@ -10,10 +10,32 @@ catch e
     e
 end
 
+# The published catalog (catalog.json) is the source of truth for the demo set.
+const EXPECTED_DEMO_NAMES = sort([
+    "surface-terrain",
+    "vector-field",
+    "phase-dashboard",
+    "uncertainty-forecast",
+    "correlation-matrix",
+    "parallel-coordinates",
+    "sankey-energy",
+    "volume-slices",
+    "molecular-scene",
+    "polar-climate",
+    "gantt-system",
+    "topology-graph",
+])
+
+@testset "DEMOS matches the published catalog" begin
+    @test sort!(collect(keys(DEMOS))) == EXPECTED_DEMO_NAMES
+    catalog = JSON3.read(read(joinpath(@__DIR__, "..", "catalog.json"), String))
+    @test sort!([entry["id"] for entry in catalog]) == EXPECTED_DEMO_NAMES
+end
+
 @testset "transparent Makie renders" begin
     mktempdir() do output_dir
         paths = render_all(output_dir)
-        names = sort!(collect(keys(DEMOS)))
+        names = EXPECTED_DEMO_NAMES
         @test length(paths) == length(DEMOS)
         @test paths == [joinpath(output_dir, "$name-transparent.png") for name in names]
         for (name, path) in zip(names, paths)
@@ -56,6 +78,16 @@ end
     end
 end
 
+@testset "render_demo writes exactly the png and sidecar into a fresh nested dir" begin
+    mktempdir() do output_dir
+        target = joinpath(output_dir, "nested", "deep")
+        path = render_demo("correlation-matrix", target)
+        @test path == joinpath(target, "correlation-matrix-transparent.png")
+        @test isdir(target)
+        @test readdir(target) == ["correlation-matrix-transparent.json", "correlation-matrix-transparent.png"]
+    end
+end
+
 @testset "validate_png rejects non-conforming images" begin
     FileIO = CairoMakie.FileIO
     Colors = CairoMakie.Colors
@@ -84,5 +116,37 @@ end
         err = capture_error(() -> validate_png(path))
         @test err isa ErrorException
         @test occursin("has too little colorful plot content", sprint(showerror, err))
+    end
+end
+
+@testset "validate_png counts pixel buckets exactly" begin
+    FileIO = CairoMakie.FileIO
+    Colors = CairoMakie.Colors
+    mktempdir() do output_dir
+        # 200x250 = 50_000 pixels split into the four counting regimes:
+        # alpha 0 (transparent), alpha 0.05 (inside the 0.03..0.10 gap, counted
+        # nowhere), opaque gray (visible but not colorful), opaque saturated
+        # (visible and colorful).
+        height, width = 200, 250
+        image = Matrix{Colors.ARGB32}(undef, height, width)
+        for i in eachindex(image)
+            if i <= 10_000
+                image[i] = Colors.ARGB32(0.0, 0.0, 0.0, 0.0)
+            elseif i <= 15_000
+                image[i] = Colors.ARGB32(0.5, 0.5, 0.5, 0.05)
+            elseif i <= 45_000
+                image[i] = Colors.ARGB32(0.6, 0.6, 0.6, 1.0)
+            else
+                image[i] = Colors.ARGB32(0.9, 0.2, 0.4, 1.0)
+            end
+        end
+        path = joinpath(output_dir, "buckets.png")
+        FileIO.save(path, image)
+        stats = validate_png(path)
+        @test stats.width == width
+        @test stats.height == height
+        @test stats.transparent_pixels == 10_000
+        @test stats.visible_pixels == 35_000
+        @test stats.colorful_pixels == 5_000
     end
 end
