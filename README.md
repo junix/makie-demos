@@ -3,7 +3,7 @@
 Twelve polished, publication-scale figures built with CairoMakie. The primary outputs are 1600×1000 background-transparent PNG files; GLMakie remains available for adapting the same scene graph to interactive windows.
 
 ```bash
-julia --project=. scripts/render.jl
+julia --project=. tools/render.jl
 julia --project=. -e 'using Pkg; Pkg.test()'
 ```
 

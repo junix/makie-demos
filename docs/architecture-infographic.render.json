@@ -8,11 +8,11 @@
     "02 · 主题系统：apply_theme!/header!/Axis/Colorbar 与 GLMakie 备选后端",
     "03 · 十二场景四大家族：3D/体、统计/矩阵、流/网络、时间/极坐标；DEMOS 字典 + catalog.json 元数据",
     "04 · 渲染与验证流水线：apply_theme → 构建场景图 → save PNG → validate_png 三门槛 → JSON manifest",
-    "05 · 入口与产物：scripts/render.jl、out/ 目录、test/runtests.jl"
+    "05 · 入口与产物：tools/render.jl、out/ 目录、test/runtests.jl"
   ],
   "source_files": [
     "src/MakieDemos.jl",
-    "scripts/render.jl",
+    "tools/render.jl",
     "catalog.json",
     "test/runtests.jl",
     "README.md"
