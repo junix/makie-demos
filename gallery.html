@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>makie-demos — gallery</title>
+<style>
+:root{
+  --bg:#fbfaf8; --panel:#fff; --ink:#16181d; --muted:#5f6570; --faint:#8b929e;
+  --line:#e3e1dc; --accent:#2f6f5e; --chip:#eef1ef; --code:#f6f5f2;
+  --shadow:0 1px 2px rgba(20,22,26,.05),0 8px 24px -12px rgba(20,22,26,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0f1114; --panel:#161a1f; --ink:#e8eaee; --muted:#a2abb8; --faint:#727d8c;
+  --line:#262c34; --accent:#6fd3b0; --chip:#1d232a; --code:#12161a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme=dark]{
+  --bg:#0f1114; --panel:#161a1f; --ink:#e8eaee; --muted:#a2abb8; --faint:#727d8c;
+  --line:#262c34; --accent:#6fd3b0; --chip:#1d232a; --code:#12161a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:56px 28px 96px}
+header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:40px}
+h1{margin:0;font-size:30px;letter-spacing:-.02em;font-weight:650}
+.tagline{margin:10px 0 0;color:var(--muted);max-width:70ch;font-size:16px}
+.meta{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pill{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
+  background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:6px 11px}
+.pill b{color:var(--ink);font-weight:600}
+.grid{display:grid;gap:26px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.shot{margin:0;padding:16px;display:flex;flex-direction:column;gap:10px;
+  align-items:center;justify-content:center;height:250px;border-bottom:1px solid var(--line)}
+.shot.tall{height:400px}
+.shot.checker{background-color:#f2f1ee;background-image:
+  linear-gradient(45deg,#e2e0dc 25%,transparent 25%,transparent 75%,#e2e0dc 75%),
+  linear-gradient(45deg,#e2e0dc 25%,transparent 25%,transparent 75%,#e2e0dc 75%);
+  background-size:16px 16px;background-position:0 0,8px 8px}
+.shot.dark{background:#11151a}
+.shot.light{background:#fff}
+.shot img,.shot video{max-width:100%;max-height:100%;width:auto;height:auto;
+  object-fit:contain;display:block;border-radius:3px}
+.shot.multi img{max-height:calc(50% - 5px)}
+.shot .missing{color:var(--faint);font-size:13px;font-style:italic;text-align:center}
+.body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.idx{font:11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--faint);
+  letter-spacing:.09em;text-transform:uppercase}
+h2{margin:0;font-size:17px;font-weight:620;letter-spacing:-.01em}
+.blurb{margin:0;color:var(--muted);font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.tag{font:11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
+  background:var(--chip);border-radius:5px;padding:4px 7px}
+details{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:var(--accent);list-style:none;user-select:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+details[open] summary::before{content:"▾ "}
+pre{margin:12px 0 0;background:var(--code);border:1px solid var(--line);border-radius:8px;
+  padding:14px;overflow-x:auto;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;
+  max-height:440px;overflow-y:auto}
+pre .c{color:var(--faint);font-style:italic}
+pre .s{color:var(--accent)}
+pre .n{color:#b1784f}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) pre .n{color:#d8a06a}}
+:root[data-theme=dark] pre .n{color:#d8a06a}
+.extra{font:11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--faint)}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--faint);font-size:13px}
+footer code{background:var(--chip);border-radius:4px;padding:2px 6px;
+  font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>makie-demos</h1>
+    <p class="tagline">Twelve publication-scale CairoMakie figures at 1600×1000 with a transparent background; the same scene graph drives GLMakie for interactive windows.</p>
+    <div class="meta"><span class="pill">CairoMakie · Julia</span><span class="pill"><b>12</b> demos</span><span class="pill"><b>12</b> rendered</span></div>
+  </header>
+  <main class="grid">
+      <article class="card">
+        <figure class="shot light"><img src="out/surface-terrain-transparent.png" alt="Surface terrain" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">01 · 3d surface</div>
+          <h2>Surface terrain</h2>
+          <p class="blurb">How do interacting waves shape a terrain?</p>
+          <div class="tags"><span class="tag">surface</span><span class="tag">3d</span><span class="tag">wireframe</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function surface_terrain()
+    fig = Figure(size = (<span class="n">1600</span>, <span class="n">1000</span>), backgroundcolor = :transparent)
+    header!(
+        fig,
+        <span class="n">2</span>,
+        <span class="s">&quot;MAKIE · CAIROMAKIE · 3D SURFACE&quot;</span>,
+        <span class="s">&quot;Folded terrain of interacting waves&quot;</span>,
+        <span class="s">&quot;A transparent, publication-scale 3D surface with projected structure and a continuous legend.&quot;</span>,
+    )
+    axis = Axis3(
+        fig[<span class="n">4</span>, <span class="n">1</span>];
+        xlabel = <span class="s">&quot;x coordinate&quot;</span>,
+        ylabel = <span class="s">&quot;y coordinate&quot;</span>,
+        zlabel = <span class="s">&quot;response&quot;</span>,
+        azimuth = <span class="n">1.22</span>pi,
+        elevation = <span class="n">0.23</span>pi,
+        aspect = (<span class="n">1.45</span>, <span class="n">1.0</span>, <span class="n">0.65</span>),
+        perspectiveness = <span class="n">0.72</span>,
+        xypanelcolor = :transparent,
+        xzpanelcolor = :transparent,
+        yzpanelcolor = :transparent,
+        xgridcolor = GRID,
+        ygridcolor = GRID,
+        zgridcolor = GRID,
+    )
+    xs = range(-<span class="n">4.2</span>, <span class="n">4.2</span>, length = <span class="n">190</span>)
+    ys = range(-<span class="n">3.2</span>, <span class="n">3.2</span>, length = <span class="n">155</span>)
+    z = [
+        <span class="n">0.78</span> * sin(sqrt(x^<span class="n">2</span> + (<span class="n">1.25</span>y)^<span class="n">2</span>) * <span class="n">2.1</span>) * exp(-<span class="n">0.055</span> * (x^<span class="n">2</span> + y^<span class="n">2</span>)) +
+        <span class="n">0.32</span> * cos(<span class="n">1.6</span>x - <span class="n">0.8</span>y) +
+        <span class="n">0.12</span>x for x in xs, y in ys
+    ]
+    surface = surface!(
+        axis,
+        xs,
+        ys,
+        z;
+        color = z,
+        colormap = :magma,
+        shading = true,
+        diffuse = Vec3f(<span class="n">0.9</span>, <span class="n">0.9</span>, <span class="n">0.9</span>),
+        specular = Vec3f(<span class="n">0.28</span>, <span class="n">0.28</span>, <span class="n">0.28</span>),
+        shininess = <span class="n">22</span>f0,
+    )
+    wireframe!(axis, xs, ys, z; color = RGBAf(<span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">0.10</span>), linewidth = <span class="n">0.45</span>)
+    Colorbar(fig[<span class="n">4</span>, <span class="n">2</span>], surface; label = <span class="s">&quot;wave response&quot;</span>, width = <span class="n">24</span>)
+    colsize!(fig.layout, <span class="n">1</span>, Relative(<span class="n">0.91</span>))
+    return fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/vector-field-transparent.png" alt="Vector field" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">02 · vector analysis</div>
+          <h2>Vector field</h2>
+          <p class="blurb">How do vortices meet a directional current?</p>
+          <div class="tags"><span class="tag">vectors</span><span class="tag">contours</span><span class="tag">flow</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function vector_field()
+    fig = Figure(size = (<span class="n">1600</span>, <span class="n">1000</span>), backgroundcolor = :transparent)
+    header!(
+        fig,
+        <span class="n">2</span>,
+        <span class="s">&quot;MAKIE · VECTOR FIELD&quot;</span>,
+        <span class="s">&quot;Vortices meeting a directional current&quot;</span>,
+        <span class="s">&quot;Arrow geometry, streamline hints, and scalar contours share one transparent analytical canvas.&quot;</span>,
+    )
+    axis = Axis(
+        fig[<span class="n">4</span>, <span class="n">1</span>];
+        xlabel = <span class="s">&quot;horizontal state&quot;</span>,
+        ylabel = <span class="s">&quot;vertical state&quot;</span>,
+        aspect = DataAspect(),
+    )
+    xs = collect(range(-<span class="n">4.5</span>, <span class="n">4.5</span>, length = <span class="n">27</span>))
+    ys = collect(range(-<span class="n">3.0</span>, <span class="n">3.0</span>, length = <span class="n">19</span>))
+    points = Point2f[]
+    vectors = Vec2f[]
+    speed = Float32[]
+    for y in ys, x in xs
+        u = -<span class="n">0.72</span>y + <span class="n">0.85</span> * sin(<span class="n">1.2</span>x) + <span class="n">0.20</span>
+        v = <span class="n">0.58</span>x + <span class="n">0.66</span> * cos(<span class="n">1.35</span>y) - <span class="n">0.11</span>x * y
+        push!(points, Point2f(x, y))
+        push!(vectors, Vec2f(u, v))
+        push!(speed, sqrt(u^<span class="n">2</span> + v^<span class="n">2</span>))
+    end
+    potential = [sin(<span class="n">1.15</span>x) + cos(<span class="n">1.35</span>y) + <span class="n">0.13</span>x * y for x in xs, y in ys]
+    contour!(
+        axis,
+        xs,
+        ys,
+        potential;
+        levels = <span class="n">18</span>,
+        colormap = :ice,
+        linewidth = <span class="n">1.2</span>,
+        alpha = <span class="n">0.28</span>,
+    )
+    arrows = arrows2d!(
+        axis,
+        points,
+        vectors;
+        color = speed,
+        colormap = :plasma,
+        lengthscale = <span class="n">0.115</span>,
+        shaftwidth = <span class="n">2.8</span>,
+        tipwidth = <span class="n">10</span>,
+        tiplength = <span class="n">13</span>,
+    )
+    Colorbar(fig[<span class="n">4</span>, <span class="n">2</span>], arrows; label = <span class="s">&quot;flow speed&quot;</span>, width = <span class="n">24</span>)
+    limits!(axis, -<span class="n">4.8</span>, <span class="n">4.8</span>, -<span class="n">3.25</span>, <span class="n">3.25</span>)
+    colsize!(fig.layout, <span class="n">1</span>, Relative(<span class="n">0.91</span>))
+    return fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/phase-dashboard-transparent.png" alt="Phase dashboard" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">03 · dynamical dashboard</div>
+          <h2>Phase dashboard</h2>
+          <p class="blurb">How does one system look across four analytical views?</p>
+          <div class="tags"><span class="tag">phase</span><span class="tag">spectrum</span><span class="tag">dashboard</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function phase_dashboard()
+    fig = Figure(size = (<span class="n">1600</span>, <span class="n">1000</span>), backgroundcolor = :transparent)
+    header!(
+        fig,
+        <span class="n">2</span>,
+        <span class="s">&quot;MAKIE · MULTIPANEL ANALYSIS&quot;</span>,
+        <span class="s">&quot;A dynamical system seen from four angles&quot;</span>,
+        <span class="s">&quot;Time evolution, phase geometry, spectrum, and recurrence form one compositional figure.&quot;</span>,
+    )
+    t = range(<span class="n">0</span>, <span class="n">42</span>, length = <span class="n">2400</span>)
+    x = @. sin(<span class="n">1.07</span>t) + <span class="n">0.42</span>sin(<span class="n">2.31</span>t + <span class="n">0.4</span>) + <span class="n">0.08</span>cos(<span class="n">7.2</span>t)
+    y = @. cos(<span class="n">0.91</span>t + <span class="n">0.8</span>) + <span class="n">0.37</span>sin(<span class="n">2.08</span>t) + <span class="n">0.12</span>cos(<span class="n">5.7</span>t)
+
+    time_axis = Axis(fig[<span class="n">4</span>, <span class="n">1</span>:<span class="n">2</span>]; xlabel = <span class="s">&quot;time&quot;</span>, ylabel = <span class="s">&quot;state&quot;</span>, title = <span class="s">&quot;Evolution&quot;</span>)
+    lines!(time_axis, t, x; color = t, colormap = :viridis, linewidth = <span class="n">3.2</span>)
+    lines!(time_axis, t, y; color = RGBAf(ACCENT.r, ACCENT.g, ACCENT.b, <span class="n">0.72</span>), linewidth = <span class="n">1.8</span>)
+
+    phase_axis = Axis(
+        fig[<span class="n">5</span>, <span class="n">1</span>];
+        xlabel = <span class="s">&quot;state x&quot;</span>,
+        ylabel = <span class="s">&quot;state y&quot;</span>,
+        title = <span class="s">&quot;Phase portrait&quot;</span>,
+        aspect = DataAspect(),
+    )
+    lines!(phase_axis, x, y; color = t, colormap = :turbo, linewidth = <span class="n">2.2</span>)
+    scatter!(phase_axis, x[<span class="n">1</span>:<span class="n">95</span>:end], y[<span class="n">1</span>:<span class="n">95</span>:end]; color = t[<span class="n">1</span>:<span class="n">95</span>:end], colormap = :turbo, markersize = <span class="n">8</span>)
+
+    diagnostic = GridLayout(fig[<span class="n">5</span>, <span class="n">2</span>])
+    spectrum_axis = Axis(diagnostic[<span class="n">1</span>, <span class="n">1</span>]; xlabel = <span class="s">&quot;mode&quot;</span>, ylabel = <span class="s">&quot;energy&quot;</span>, title = <span class="s">&quot;Harmonic energy&quot;</span>)
+    modes = <span class="n">1</span>:<span class="n">24</span>
+    energy = @. exp(-<span class="n">0.115</span>modes) * (<span class="n">0.48</span> + <span class="n">0.52</span>abs(sin(<span class="n">0.91</span>modes)))
+    barplot!(spectrum_axis, modes, energy; color = energy, colormap = :plasma, strokewidth = <span class="n">0</span>)
+
+    recurrence_axis = Axis(
+        diagnostic[<span class="n">2</span>, <span class="n">1</span>];
+        xlabel = <span class="s">&quot;lag&quot;</span>,
+        ylabel = <span class="s">&quot;window&quot;</span>,
+        title = <span class="s">&quot;Recurrence contours&quot;</span>,
+    )
+    recurrence = [
+        sin(<span class="n">0.18</span>i + <span class="n">0.24</span>j) * cos(<span class="n">0.04</span>i * j) + <span class="n">0.3</span>sin(<span class="n">0.8</span>i - <span class="n">0.3</span>j)
+        for i in <span class="n">1</span>:<span class="n">74</span>, j in <span class="n">1</span>:<span class="n">38</span>
+    ]
+    contour!(recurrence_axis, recurrence; levels = <span class="n">13</span>, colormap = :magma, linewidth = <span class="n">1.5</span>)
+    rowgap!(diagnostic, <span class="n">18</span>)
+    return fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/uncertainty-forecast-transparent.png" alt="Uncertainty forecast" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">04 · uncertainty</div>
+          <h2>Uncertainty forecast</h2>
+          <p class="blurb">How does ensemble uncertainty evolve over a forecast?</p>
+          <div class="tags"><span class="tag">ensemble</span><span class="tag">band</span><span class="tag">forecast</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function uncertainty_forecast()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">2</span>,<span class="s">&quot;MAKIE · ENSEMBLE FORECAST&quot;</span>,<span class="s">&quot;Forecast fan with calibrated uncertainty&quot;</span>,<span class="s">&quot;Two hundred deterministic trajectories, percentile bands, observations, and residual diagnostics.&quot;</span>)
+    ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>:<span class="n">2</span>];xlabel=<span class="s">&quot;forecast horizon&quot;</span>,ylabel=<span class="s">&quot;response&quot;</span>,title=<span class="s">&quot;Ensemble and credible intervals&quot;</span>);t=range(<span class="n">0</span>,<span class="n">24</span>,length=<span class="n">260</span>);members=[@. <span class="n">0.08</span>t+sin(t/<span class="n">2.8</span>)+<span class="n">0.06</span>m*cos(t*(<span class="n">0.7</span>+<span class="n">0.002</span>m))+(m-<span class="n">100</span>)*<span class="n">0.006</span>*(t/<span class="n">24</span>)^<span class="n">1.4</span> for m in <span class="n">1</span>:<span class="n">200</span>];mat=hcat(members...);lo=[quantile(mat[i,:],.<span class="n">1</span>) for i in axes(mat,<span class="n">1</span>)];hi=[quantile(mat[i,:],.<span class="n">9</span>) for i in axes(mat,<span class="n">1</span>)];mid=[quantile(mat[i,:],.<span class="n">5</span>) for i in axes(mat,<span class="n">1</span>)];band!(ax,t,lo,hi;color=RGBAf(.<span class="n">31</span>,.<span class="n">62</span>,.<span class="n">74</span>,.<span class="n">25</span>));for m in <span class="n">1</span>:<span class="n">8</span>:<span class="n">200</span> lines!(ax,t,members[m];color=RGBAf(.<span class="n">28</span>,.<span class="n">42</span>,.<span class="n">65</span>,.<span class="n">12</span>),linewidth=<span class="n">1</span>) end;lines!(ax,t,mid;color=ACCENT,linewidth=<span class="n">4</span>)
+    err=Axis(fig[<span class="n">5</span>,<span class="n">1</span>];xlabel=<span class="s">&quot;horizon&quot;</span>,ylabel=<span class="s">&quot;spread&quot;</span>,title=<span class="s">&quot;80% interval width&quot;</span>);lines!(err,t,hi.-lo;color=:darkorange,linewidth=<span class="n">3</span>);cov=Axis(fig[<span class="n">5</span>,<span class="n">2</span>];xlabel=<span class="s">&quot;horizon&quot;</span>,ylabel=<span class="s">&quot;coverage&quot;</span>,title=<span class="s">&quot;Rolling calibration&quot;</span>);coverage=@. .<span class="n">82</span>+.<span class="n">08</span>sin(t*.<span class="n">45</span>)-.<span class="n">04</span>cos(t*.<span class="n">12</span>);lines!(cov,t,coverage;color=:teal,linewidth=<span class="n">3</span>);hlines!(cov,[.<span class="n">8</span>];color=RGBAf(INK.r,INK.g,INK.b,.<span class="n">3</span>),linestyle=:dash);fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/correlation-matrix-transparent.png" alt="Correlation matrix" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">05 · matrix</div>
+          <h2>Correlation matrix</h2>
+          <p class="blurb">Which system variables move together or oppose each other?</p>
+          <div class="tags"><span class="tag">correlation</span><span class="tag">matrix</span><span class="tag">annotation</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function correlation_matrix()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">2</span>,<span class="s">&quot;MAKIE · MATRIX ANALYSIS&quot;</span>,<span class="s">&quot;Correlation and dependency matrix&quot;</span>,<span class="s">&quot;A signed 14×14 system matrix combines magnitude, direction, clusters, and readable labels.&quot;</span>)
+    names=[<span class="s">&quot;load&quot;</span>,<span class="s">&quot;latency&quot;</span>,<span class="s">&quot;errors&quot;</span>,<span class="s">&quot;queue&quot;</span>,<span class="s">&quot;cache&quot;</span>,<span class="s">&quot;cpu&quot;</span>,<span class="s">&quot;memory&quot;</span>,<span class="s">&quot;disk&quot;</span>,<span class="s">&quot;network&quot;</span>,<span class="s">&quot;users&quot;</span>,<span class="s">&quot;jobs&quot;</span>,<span class="s">&quot;retries&quot;</span>,<span class="s">&quot;cost&quot;</span>,<span class="s">&quot;slo&quot;</span>];n=length(names);matrix=[i==j ? <span class="n">1.0</span> : clamp(.<span class="n">72</span>sin(i*.<span class="n">7</span>+j*.<span class="n">31</span>)+.<span class="n">25</span>cos(i*j*.<span class="n">11</span>),-<span class="n">1</span>,<span class="n">1</span>) for i in <span class="n">1</span>:n,j in <span class="n">1</span>:n];ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>];xticks=(<span class="n">1</span>:n,names),yticks=(<span class="n">1</span>:n,names),xticklabelrotation=pi/<span class="n">3</span>,aspect=DataAspect(),title=<span class="s">&quot;Signed correlation&quot;</span>);hm=heatmap!(ax,matrix;colormap=:balance,colorrange=(-<span class="n">1</span>,<span class="n">1</span>));for i in <span class="n">1</span>:n,j in <span class="n">1</span>:n text!(ax,string(round(matrix[i,j];digits=<span class="n">1</span>));position=(i,j),align=(:center,:center),fontsize=<span class="n">11</span>,color=abs(matrix[i,j])&gt;.<span class="n">55</span> ? :white : INK) end;Colorbar(fig[<span class="n">4</span>,<span class="n">2</span>],hm;label=<span class="s">&quot;correlation&quot;</span>,width=<span class="n">26</span>);colsize!(fig.layout,<span class="n">1</span>,Relative(.<span class="n">91</span>));fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/parallel-coordinates-transparent.png" alt="Parallel coordinates" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">06 · multivariate</div>
+          <h2>Parallel coordinates</h2>
+          <p class="blurb">How do field campaigns compare across five dimensions?</p>
+          <div class="tags"><span class="tag">parallel</span><span class="tag">profiles</span><span class="tag">multivariate</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function parallel_coordinates()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">1</span>,<span class="s">&quot;MAKIE · MULTIVARIATE PROFILES&quot;</span>,<span class="s">&quot;Parallel-coordinate expedition profiles&quot;</span>,<span class="s">&quot;Every expedition remains visible while five dimensions and four mission classes preserve context.&quot;</span>)
+    ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>];limits=(.<span class="n">6</span>,<span class="n">5.4</span>,<span class="n">0</span>,<span class="n">1</span>),xticks=(<span class="n">1</span>:<span class="n">5</span>,[<span class="s">&quot;elevation&quot;</span>,<span class="s">&quot;temperature&quot;</span>,<span class="s">&quot;humidity&quot;</span>,<span class="s">&quot;wind&quot;</span>,<span class="s">&quot;visibility&quot;</span>]),ylabel=<span class="s">&quot;normalized value&quot;</span>,title=<span class="s">&quot;84 field campaigns&quot;</span>);for i in <span class="n">1</span>:<span class="n">84</span> vals=[mod(i*<span class="n">17</span>+j*<span class="n">29</span>+j*i*<span class="n">3</span>,<span class="n">97</span>)/<span class="n">96</span> for j in <span class="n">1</span>:<span class="n">5</span>];lines!(ax,<span class="n">1</span>:<span class="n">5</span>,vals;color=with_alpha(PALETTE[mod1(i,<span class="n">4</span>)],<span class="n">0.34</span>),linewidth=<span class="n">1.8</span>);scatter!(ax,<span class="n">1</span>:<span class="n">5</span>,vals;color=[mod1(i,<span class="n">4</span>) for _ in <span class="n">1</span>:<span class="n">5</span>],colormap=collect(PALETTE),markersize=<span class="n">5</span>) end;for x in <span class="n">1</span>:<span class="n">5</span> vlines!(ax,[x];color=RGBAf(INK.r,INK.g,INK.b,.<span class="n">28</span>)) end;fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/sankey-energy-transparent.png" alt="Sankey energy" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">07 · flow</div>
+          <h2>Sankey energy</h2>
+          <p class="blurb">Where does renewable energy move and dissipate?</p>
+          <div class="tags"><span class="tag">sankey</span><span class="tag">ribbons</span><span class="tag">energy</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function sankey_energy()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">1</span>,<span class="s">&quot;MAKIE · FLOW DIAGRAM&quot;</span>,<span class="s">&quot;Energy conversion Sankey&quot;</span>,<span class="s">&quot;Source, storage, demand, and loss channels are encoded as proportionally thick ribbons.&quot;</span>)
+    ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>];limits=(<span class="n">0</span>,<span class="n">10</span>,<span class="n">0</span>,<span class="n">10</span>),aspect=DataAspect(),title=<span class="s">&quot;Renewable system flows&quot;</span>);hidedecorations!(ax);hidespines!(ax);nodes=[(<span class="n">1</span>,<span class="n">8</span>,<span class="s">&quot;Wind&quot;</span>,<span class="n">2.2</span>,PALETTE[<span class="n">1</span>]),(<span class="n">1</span>,<span class="n">5</span>,<span class="s">&quot;Solar&quot;</span>,<span class="n">2.7</span>,PALETTE[<span class="n">4</span>]),(<span class="n">1</span>,<span class="n">2</span>,<span class="s">&quot;Hydro&quot;</span>,<span class="n">1.7</span>,PALETTE[<span class="n">2</span>]),(<span class="n">4.5</span>,<span class="n">6.5</span>,<span class="s">&quot;Grid&quot;</span>,<span class="n">3.0</span>,PALETTE[<span class="n">2</span>]),(<span class="n">4.5</span>,<span class="n">2.7</span>,<span class="s">&quot;Storage&quot;</span>,<span class="n">2.0</span>,PALETTE[<span class="n">3</span>]),(<span class="n">8</span>,<span class="n">8</span>,<span class="s">&quot;Homes&quot;</span>,<span class="n">1.8</span>,PALETTE[<span class="n">1</span>]),(<span class="n">8</span>,<span class="n">5</span>,<span class="s">&quot;Industry&quot;</span>,<span class="n">2.4</span>,PALETTE[<span class="n">3</span>]),(<span class="n">8</span>,<span class="n">2</span>,<span class="s">&quot;Mobility&quot;</span>,<span class="n">1.6</span>,PALETTE[<span class="n">4</span>])];for (x,y,n,h,c) in nodes poly!(ax,Rect2f(x-.<span class="n">35</span>,y-h/<span class="n">2</span>,.<span class="n">7</span>,h);color=with_alpha(c,.<span class="n">65</span>),strokecolor=c,strokewidth=<span class="n">2</span>);text!(ax,n;position=(x,y),align=(:center,:center),color=INK,fontsize=<span class="n">16</span>) end
+    flows=[(<span class="n">1.35</span>,<span class="n">8</span>,<span class="n">4.15</span>,<span class="n">7.4</span>,.<span class="n">8</span>,PALETTE[<span class="n">1</span>]),(<span class="n">1.35</span>,<span class="n">5</span>,<span class="n">4.15</span>,<span class="n">6.5</span>,<span class="n">1.0</span>,PALETTE[<span class="n">4</span>]),(<span class="n">1.35</span>,<span class="n">2</span>,<span class="n">4.15</span>,<span class="n">5.7</span>,.<span class="n">7</span>,PALETTE[<span class="n">2</span>]),(<span class="n">4.85</span>,<span class="n">7.2</span>,<span class="n">7.65</span>,<span class="n">8</span>,.<span class="n">7</span>,PALETTE[<span class="n">1</span>]),(<span class="n">4.85</span>,<span class="n">6.4</span>,<span class="n">7.65</span>,<span class="n">5</span>,.<span class="n">9</span>,PALETTE[<span class="n">3</span>]),(<span class="n">4.85</span>,<span class="n">5.8</span>,<span class="n">7.65</span>,<span class="n">2</span>,.<span class="n">6</span>,PALETTE[<span class="n">4</span>]),(<span class="n">4.85</span>,<span class="n">3.0</span>,<span class="n">7.65</span>,<span class="n">5</span>,.<span class="n">45</span>,PALETTE[<span class="n">3</span>]),(<span class="n">4.85</span>,<span class="n">2.5</span>,<span class="n">7.65</span>,<span class="n">2</span>,.<span class="n">55</span>,PALETTE[<span class="n">3</span>])];for (x0,y0,x1,y1,w,c) in flows xs=range(x0,x1,length=<span class="n">80</span>);ys=[(<span class="n">1</span>-u)*y0+u*y1+sin(pi*u)*(.<span class="n">35</span>sign(y1-y0)) for u in range(<span class="n">0</span>,<span class="n">1</span>,length=<span class="n">80</span>)];band!(ax,xs,ys.-w/<span class="n">2</span>,ys.+w/<span class="n">2</span>;color=with_alpha(c,.<span class="n">28</span>)) end;fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/volume-slices-transparent.png" alt="Volume slices" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">08 · volume</div>
+          <h2>Volume slices</h2>
+          <p class="blurb">What structure appears across orthogonal volume slices?</p>
+          <div class="tags"><span class="tag">volume</span><span class="tag">slices</span><span class="tag">tomography</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function volume_slices()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">3</span>,<span class="s">&quot;MAKIE · VOLUME SLICES&quot;</span>,<span class="s">&quot;Tomographic field sections&quot;</span>,<span class="s">&quot;Orthogonal slices, shared scale, and contour overlays reveal a synthetic volumetric structure.&quot;</span>)
+    n=<span class="n">120</span>;coords=range(-<span class="n">3</span>,<span class="n">3</span>,length=n);vol=[exp(-((x+<span class="n">1</span>)^<span class="n">2</span>+y^<span class="n">2</span>+z^<span class="n">2</span>))+.<span class="n">8</span>exp(-((x-<span class="n">1.2</span>)^<span class="n">2</span>+(y-.<span class="n">5</span>)^<span class="n">2</span>+(z+.<span class="n">4</span>)^<span class="n">2</span>)*<span class="n">1.4</span>)+.<span class="n">25</span>sin(<span class="n">3</span>x+<span class="n">2</span>y-z) for x in coords,y in coords,z in coords];slices=[vol[:,:,<span class="n">60</span>],vol[:,<span class="n">55</span>,:],vol[<span class="n">70</span>,:,:]];titles=[<span class="s">&quot;axial z=0&quot;</span>,<span class="s">&quot;coronal y=-0.2&quot;</span>,<span class="s">&quot;sagittal x=0.5&quot;</span>];last=nothing;for i in <span class="n">1</span>:<span class="n">3</span> ax=Axis(fig[<span class="n">4</span>,i];aspect=DataAspect(),title=titles[i],xlabel=<span class="s">&quot;coordinate&quot;</span>,ylabel=<span class="s">&quot;coordinate&quot;</span>);last=heatmap!(ax,coords,coords,slices[i];colormap=:magma);contour!(ax,coords,coords,slices[i];levels=<span class="n">9</span>,color=RGBAf(<span class="n">1</span>,<span class="n">1</span>,<span class="n">1</span>,.<span class="n">35</span>),linewidth=<span class="n">1</span>) end;Colorbar(fig[<span class="n">5</span>,<span class="n">1</span>:<span class="n">3</span>],last;vertical=false,label=<span class="s">&quot;field intensity&quot;</span>,width=Relative(.<span class="n">6</span>));fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/molecular-scene-transparent.png" alt="Molecular scene" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">09 · molecular 3d</div>
+          <h2>Molecular scene</h2>
+          <p class="blurb">How do atom classes and bonds form a molecule?</p>
+          <div class="tags"><span class="tag">molecule</span><span class="tag">3d</span><span class="tag">network</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function molecular_scene()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">2</span>,<span class="s">&quot;MAKIE · MOLECULAR SCENE&quot;</span>,<span class="s">&quot;Molecular geometry and bond network&quot;</span>,<span class="s">&quot;Atom class, bond order, and functional-group geometry share one publication-scale 3D view.&quot;</span>)
+    ax=Axis3(fig[<span class="n">4</span>,<span class="n">1</span>];azimuth=<span class="n">1.25</span>pi,elevation=.<span class="n">2</span>pi,aspect=(<span class="n">1.5</span>,<span class="n">1</span>,.<span class="n">7</span>),xypanelcolor=:transparent,xzpanelcolor=:transparent,yzpanelcolor=:transparent);pts=[Point3f(cos(i*.<span class="n">78</span>)*(<span class="n">1</span>+.<span class="n">08</span>i),sin(i*.<span class="n">78</span>)*(<span class="n">1</span>+.<span class="n">05</span>i),.<span class="n">55</span>sin(i*.<span class="n">39</span>)) for i in <span class="n">1</span>:<span class="n">28</span>];cols=[[:teal,:hotpink,:cornflowerblue,:gold][mod1(i,<span class="n">4</span>)] for i in <span class="n">1</span>:<span class="n">28</span>];meshscatter!(ax,pts;color=cols,markersize=[.<span class="n">18</span>+.<span class="n">04</span>mod(i,<span class="n">5</span>) for i in <span class="n">1</span>:<span class="n">28</span>]);for i in <span class="n">2</span>:<span class="n">28</span> lines!(ax,[pts[i-<span class="n">1</span>],pts[i]];color=RGBAf(.<span class="n">35</span>,.<span class="n">5</span>,.<span class="n">62</span>,.<span class="n">65</span>),linewidth=<span class="n">4</span>) end;for i in <span class="n">5</span>:<span class="n">6</span>:<span class="n">28</span> lines!(ax,[pts[i],pts[mod1(i+<span class="n">7</span>,<span class="n">28</span>)]];color=RGBAf(<span class="n">1</span>,.<span class="n">65</span>,.<span class="n">3</span>,.<span class="n">6</span>),linewidth=<span class="n">2</span>) end;Legend(fig[<span class="n">4</span>,<span class="n">2</span>],[MarkerElement(color=c,marker=:circle,markersize=<span class="n">20</span>) for c in [:teal,:hotpink,:cornflowerblue,:gold]],[<span class="s">&quot;carbon&quot;</span>,<span class="s">&quot;oxygen&quot;</span>,<span class="s">&quot;nitrogen&quot;</span>,<span class="s">&quot;functional group&quot;</span>]);colsize!(fig.layout,<span class="n">1</span>,Relative(.<span class="n">86</span>));fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/polar-climate-transparent.png" alt="Polar climate" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">10 · polar</div>
+          <h2>Polar climate</h2>
+          <p class="blurb">How do direction and season interact?</p>
+          <div class="tags"><span class="tag">polar</span><span class="tag">seasonal</span><span class="tag">climate</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function polar_climate()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">2</span>,<span class="s">&quot;MAKIE · POLAR ANALYSIS&quot;</span>,<span class="s">&quot;Seasonal climate wheel&quot;</span>,<span class="s">&quot;Direction, month, magnitude, and uncertainty are aligned in a radial small-multiple composition.&quot;</span>)
+    ax=PolarAxis(fig[<span class="n">4</span>,<span class="n">1</span>];title=<span class="s">&quot;Directional intensity by month&quot;</span>);theta=range(<span class="n">0</span>,<span class="n">2</span>pi,length=<span class="n">145</span>);for m in <span class="n">1</span>:<span class="n">12</span> r=@. <span class="n">1.2</span>+.<span class="n">07</span>m+.<span class="n">45</span>sin(<span class="n">3</span>theta+m*.<span class="n">4</span>)+.<span class="n">18</span>cos(<span class="n">7</span>theta-m);lines!(ax,theta,r;color=with_alpha(PALETTE[mod1(m,<span class="n">4</span>)],.<span class="n">38</span>),linewidth=<span class="n">2</span>) end;bars=Axis(fig[<span class="n">4</span>,<span class="n">2</span>];xlabel=<span class="s">&quot;month&quot;</span>,ylabel=<span class="s">&quot;mean intensity&quot;</span>,title=<span class="s">&quot;Monthly aggregate&quot;</span>);vals=[<span class="n">1.4</span>+.<span class="n">45</span>sin(m*.<span class="n">55</span>)+.<span class="n">15</span>cos(m*<span class="n">1.8</span>) for m in <span class="n">1</span>:<span class="n">12</span>];barplot!(bars,<span class="n">1</span>:<span class="n">12</span>,vals;color=vals,colormap=:turbo);fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/gantt-system-transparent.png" alt="Gantt system" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">11 · timeline</div>
+          <h2>Gantt system</h2>
+          <p class="blurb">How do mission workstreams and gates depend on each other?</p>
+          <div class="tags"><span class="tag">gantt</span><span class="tag">dependencies</span><span class="tag">planning</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function gantt_system()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">1</span>,<span class="s">&quot;MAKIE · PROGRAM TIMELINE&quot;</span>,<span class="s">&quot;Mission program dependency map&quot;</span>,<span class="s">&quot;Workstreams, decision gates, milestones, and slack are composed as a dense planning figure.&quot;</span>)
+    ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>];limits=(<span class="n">0</span>,<span class="n">20</span>,<span class="n">0</span>,<span class="n">11</span>),xticks=<span class="n">0</span>:<span class="n">2</span>:<span class="n">20</span>,yticks=(<span class="n">1</span>:<span class="n">10</span>,[<span class="s">&quot;Science&quot;</span>,<span class="s">&quot;Design&quot;</span>,<span class="s">&quot;Prototype&quot;</span>,<span class="s">&quot;Flight&quot;</span>,<span class="s">&quot;Comms&quot;</span>,<span class="s">&quot;Ground&quot;</span>,<span class="s">&quot;Data&quot;</span>,<span class="s">&quot;Safety&quot;</span>,<span class="s">&quot;Public&quot;</span>,<span class="s">&quot;Review&quot;</span>]),xlabel=<span class="s">&quot;program month&quot;</span>,title=<span class="s">&quot;Integrated delivery plan&quot;</span>);starts=[<span class="n">0</span>,<span class="n">1</span>,<span class="n">3</span>,<span class="n">5</span>,<span class="n">7</span>,<span class="n">2</span>,<span class="n">8</span>,<span class="n">6</span>,<span class="n">12</span>,<span class="n">16</span>];dur=[<span class="n">5</span>,<span class="n">6</span>,<span class="n">5</span>,<span class="n">7</span>,<span class="n">4</span>,<span class="n">8</span>,<span class="n">6</span>,<span class="n">7</span>,<span class="n">4</span>,<span class="n">3</span>];for i in <span class="n">1</span>:<span class="n">10</span> poly!(ax,Rect2f(starts[i],i-.<span class="n">32</span>,dur[i],.<span class="n">64</span>);color=with_alpha(PALETTE[mod1(i,<span class="n">4</span>)],.<span class="n">55</span>),strokecolor=INK,strokewidth=<span class="n">1</span>);text!(ax,<span class="s">&quot;P$(lpad(string(i),2,&#x27;0&#x27;))&quot;</span>;position=(starts[i]+.<span class="n">25</span>,i),align=(:left,:center),color=INK,fontsize=<span class="n">13</span>);if i&lt;<span class="n">10</span> lines!(ax,[Point2f(starts[i]+dur[i],i),Point2f(starts[i+<span class="n">1</span>],i+<span class="n">1</span>)];color=RGBAf(INK.r,INK.g,INK.b,.<span class="n">35</span>),linestyle=:dash) end end;vlines!(ax,[<span class="n">5</span>,<span class="n">10</span>,<span class="n">15</span>];color=ACCENT,linewidth=<span class="n">2</span>,linestyle=:dot);fig
+end
+</code></pre></details>
+        </div>
+      </article>
+      <article class="card">
+        <figure class="shot light"><img src="out/topology-graph-transparent.png" alt="Topology graph" loading="lazy"></figure>
+        <div class="body">
+          <div class="idx">12 · network</div>
+          <h2>Topology graph</h2>
+          <p class="blurb">Which services bridge a layered compute topology?</p>
+          <div class="tags"><span class="tag">graph</span><span class="tag">topology</span><span class="tag">systems</span><span class="tag">advanced</span></div>
+          <details><summary>src/MakieDemos.jl</summary><pre><code>function topology_graph()
+    fig=Figure(size=(<span class="n">1600</span>,<span class="n">1000</span>),backgroundcolor=:transparent);header!(fig,<span class="n">1</span>,<span class="s">&quot;MAKIE · GRAPH TOPOLOGY&quot;</span>,<span class="s">&quot;Layered compute topology&quot;</span>,<span class="s">&quot;Clusters, cross-links, centrality, and edge classes form a reusable systems reference.&quot;</span>)
+    ax=Axis(fig[<span class="n">4</span>,<span class="n">1</span>];limits=(-<span class="n">6</span>,<span class="n">6</span>,-<span class="n">4</span>,<span class="n">4</span>),aspect=DataAspect(),title=<span class="s">&quot;Service and data dependency field&quot;</span>);hidedecorations!(ax);hidespines!(ax);pts=[Point2f(cos(i*<span class="n">2.399</span>)*(<span class="n">1</span>+.<span class="n">07</span>i),sin(i*<span class="n">2.399</span>)*(<span class="n">1</span>+.<span class="n">05</span>i)) for i in <span class="n">1</span>:<span class="n">46</span>];for i in <span class="n">2</span>:<span class="n">46</span> lines!(ax,[pts[i],pts[mod1(i*<span class="n">7</span>,<span class="n">46</span>)]];color=RGBAf(.<span class="n">35</span>,.<span class="n">5</span>,.<span class="n">65</span>,.<span class="n">18</span>+(i%<span class="n">4</span>)*.<span class="n">05</span>),linewidth=<span class="n">1</span>+(i%<span class="n">3</span>));if i%<span class="n">5</span>==<span class="n">0</span> lines!(ax,[pts[i],pts[mod1(i+<span class="n">13</span>,<span class="n">46</span>)]];color=RGBAf(<span class="n">1</span>,.<span class="n">45</span>,.<span class="n">58</span>,.<span class="n">35</span>),linestyle=:dash) end end;scatter!(ax,pts;color=[mod1(i,<span class="n">5</span>) for i in <span class="n">1</span>:<span class="n">46</span>],colormap=[:teal,:cornflowerblue,:hotpink,:gold,:orchid],markersize=[<span class="n">12</span>+mod(i*<span class="n">7</span>,<span class="n">22</span>) for i in <span class="n">1</span>:<span class="n">46</span>],strokecolor=:white,strokewidth=<span class="n">1</span>);fig
+end
+</code></pre></details>
+        </div>
+      </article>
+  </main>
+  <footer>
+    Generated by <code>tools/gallery.py</code> — regenerate with <code>just gallery</code>
+    after <code>just build</code>. Images are referenced from
+    <code>out/</code>, so open this file straight from the checkout.
+  </footer>
+</div>
+</body>
+</html>

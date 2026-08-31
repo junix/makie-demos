@@ -1,0 +1,8 @@
+{
+  "title": "makie-demos",
+  "library": "CairoMakie · Julia",
+  "tagline": "Twelve publication-scale CairoMakie figures at 1600×1000 with a transparent background; the same scene graph drives GLMakie for interactive windows.",
+  "rebuild": "just build",
+  "backdrop": "light",
+  "code_search": "src/MakieDemos.jl"
+}
