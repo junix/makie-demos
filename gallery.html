@@ -32,6 +32,19 @@ h1{margin:0;font-size:30px;letter-spacing:-.02em;font-weight:650}
 .pill{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
   background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:6px 11px}
 .pill b{color:var(--ink);font-weight:600}
+.controls{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:12px 0;margin:0 0 26px;background:linear-gradient(var(--bg) 80%,transparent)}
+.controls input{flex:1 1 220px;max-width:400px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel);color:var(--ink);padding:9px 13px;font-size:14px;font-family:inherit}
+.controls input:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);cursor:pointer;
+  background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:6px 11px}
+.chip span{color:var(--faint);margin-left:3px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.chip[aria-pressed="true"] span{color:var(--bg);opacity:.75}
+#count{margin-left:auto;color:var(--muted);font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+#empty{color:var(--muted);font-size:14px}
 .grid{display:grid;gap:26px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
   overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
@@ -86,8 +99,14 @@ footer code{background:var(--chip);border-radius:4px;padding:2px 6px;
     <p class="tagline">Twelve publication-scale CairoMakie figures at 1600×1000 with a transparent background; the same scene graph drives GLMakie for interactive windows.</p>
     <div class="meta"><span class="pill">CairoMakie · Julia</span><span class="pill"><b>12</b> demos</span><span class="pill"><b>12</b> rendered</span></div>
   </header>
+  <section class="controls" aria-label="Gallery filters">
+    <input id="q" type="search" placeholder="Filter by title, blurb, tag, or family…" autocomplete="off" aria-label="Filter demos">
+    
+    <output id="count" aria-live="polite">12 shown</output>
+  </section>
+  <p id="empty" hidden>No demos match the current filter.</p>
   <main class="grid">
-      <article class="card">
+      <article class="card" data-family="3d surface" data-search="surface terrain how do interacting waves shape a terrain? surface 3d wireframe advanced 01 · 3d surface 3d surface">
         <figure class="shot light"><img src="out/surface-terrain-transparent.png" alt="Surface terrain" loading="lazy"></figure>
         <div class="body">
           <div class="idx">01 · 3d surface</div>
@@ -146,7 +165,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="vector analysis" data-search="vector field how do vortices meet a directional current? vectors contours flow advanced 02 · vector analysis vector analysis">
         <figure class="shot light"><img src="out/vector-field-transparent.png" alt="Vector field" loading="lazy"></figure>
         <div class="body">
           <div class="idx">02 · vector analysis</div>
@@ -210,7 +229,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="dynamical dashboard" data-search="phase dashboard how does one system look across four analytical views? phase spectrum dashboard advanced 03 · dynamical dashboard dynamical dashboard">
         <figure class="shot light"><img src="out/phase-dashboard-transparent.png" alt="Phase dashboard" loading="lazy"></figure>
         <div class="body">
           <div class="idx">03 · dynamical dashboard</div>
@@ -267,7 +286,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="uncertainty" data-search="uncertainty forecast how does ensemble uncertainty evolve over a forecast? ensemble band forecast advanced 04 · uncertainty uncertainty">
         <figure class="shot light"><img src="out/uncertainty-forecast-transparent.png" alt="Uncertainty forecast" loading="lazy"></figure>
         <div class="body">
           <div class="idx">04 · uncertainty</div>
@@ -282,7 +301,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="matrix" data-search="correlation matrix which system variables move together or oppose each other? correlation matrix annotation advanced 05 · matrix matrix">
         <figure class="shot light"><img src="out/correlation-matrix-transparent.png" alt="Correlation matrix" loading="lazy"></figure>
         <div class="body">
           <div class="idx">05 · matrix</div>
@@ -296,7 +315,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="multivariate" data-search="parallel coordinates how do field campaigns compare across five dimensions? parallel profiles multivariate advanced 06 · multivariate multivariate">
         <figure class="shot light"><img src="out/parallel-coordinates-transparent.png" alt="Parallel coordinates" loading="lazy"></figure>
         <div class="body">
           <div class="idx">06 · multivariate</div>
@@ -310,7 +329,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="flow" data-search="sankey energy where does renewable energy move and dissipate? sankey ribbons energy advanced 07 · flow flow">
         <figure class="shot light"><img src="out/sankey-energy-transparent.png" alt="Sankey energy" loading="lazy"></figure>
         <div class="body">
           <div class="idx">07 · flow</div>
@@ -325,7 +344,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="volume" data-search="volume slices what structure appears across orthogonal volume slices? volume slices tomography advanced 08 · volume volume">
         <figure class="shot light"><img src="out/volume-slices-transparent.png" alt="Volume slices" loading="lazy"></figure>
         <div class="body">
           <div class="idx">08 · volume</div>
@@ -339,7 +358,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="molecular 3d" data-search="molecular scene how do atom classes and bonds form a molecule? molecule 3d network advanced 09 · molecular 3d molecular 3d">
         <figure class="shot light"><img src="out/molecular-scene-transparent.png" alt="Molecular scene" loading="lazy"></figure>
         <div class="body">
           <div class="idx">09 · molecular 3d</div>
@@ -353,7 +372,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="polar" data-search="polar climate how do direction and season interact? polar seasonal climate advanced 10 · polar polar">
         <figure class="shot light"><img src="out/polar-climate-transparent.png" alt="Polar climate" loading="lazy"></figure>
         <div class="body">
           <div class="idx">10 · polar</div>
@@ -367,7 +386,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="timeline" data-search="gantt system how do mission workstreams and gates depend on each other? gantt dependencies planning advanced 11 · timeline timeline">
         <figure class="shot light"><img src="out/gantt-system-transparent.png" alt="Gantt system" loading="lazy"></figure>
         <div class="body">
           <div class="idx">11 · timeline</div>
@@ -381,7 +400,7 @@ end
 </code></pre></details>
         </div>
       </article>
-      <article class="card">
+      <article class="card" data-family="network" data-search="topology graph which services bridge a layered compute topology? graph topology systems advanced 12 · network network">
         <figure class="shot light"><img src="out/topology-graph-transparent.png" alt="Topology graph" loading="lazy"></figure>
         <div class="body">
           <div class="idx">12 · network</div>
@@ -402,5 +421,38 @@ end
     <code>out/</code>, so open this file straight from the checkout.
   </footer>
 </div>
+<script>
+(function(){
+  var q=document.getElementById('q'),count=document.getElementById('count'),empty=document.getElementById('empty');
+  var cards=[].slice.call(document.querySelectorAll('.card'));
+  var chips=[].slice.call(document.querySelectorAll('.chip'));
+  var family='';
+  function apply(){
+    var t=q.value.trim().toLowerCase(),n=0;
+    for(var i=0;i<cards.length;i++){
+      var c=cards[i];
+      var ok=(!family||c.getAttribute('data-family')===family)&&
+             (!t||(c.getAttribute('data-search')||'').indexOf(t)>=0);
+      c.style.display=ok?'':'none';
+      if(ok)n++;
+    }
+    count.value=n+' / '+cards.length+' shown';
+    empty.hidden=n>0;
+    for(var j=0;j<chips.length;j++){
+      var ch=chips[j];
+      ch.setAttribute('aria-pressed',String(ch.getAttribute('data-family')===family));
+    }
+  }
+  q.addEventListener('input',apply);
+  chips.forEach(function(ch){
+    ch.addEventListener('click',function(){
+      var f=ch.getAttribute('data-family');
+      family=(f===family)?'':f;
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
 </body>
 </html>
