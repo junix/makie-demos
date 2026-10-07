@@ -132,6 +132,62 @@ end
     end
 end
 
+# Seeds the live pair with sentinel bytes so a failed render can be proven to
+# leave the previous artifacts byte-for-byte intact.
+function seed_sentinel_pair(target, name)
+    mkpath(target)
+    png = joinpath(target, "$name-transparent.png")
+    sidecar = joinpath(target, "$name-transparent.json")
+    write(png, "sentinel-png")
+    write(sidecar, "sentinel-json")
+    return png, sidecar
+end
+
+@testset "render_demo keeps the published pair when validation or sidecar writing fails" begin
+    mktempdir() do output_dir
+        target = joinpath(output_dir, "out")
+        png, sidecar = seed_sentinel_pair(target, "correlation-matrix")
+
+        validation_err = capture_error(() -> render_demo(
+            "correlation-matrix", target;
+            validator = staged_path -> error("injected validation failure"),
+        ))
+        @test validation_err isa ErrorException
+        @test occursin("injected validation failure", sprint(showerror, validation_err))
+        @test read(png, String) == "sentinel-png"
+        @test read(sidecar, String) == "sentinel-json"
+        @test readdir(target) == ["correlation-matrix-transparent.json", "correlation-matrix-transparent.png"]
+
+        sidecar_err = capture_error(() -> render_demo(
+            "correlation-matrix", target;
+            write_sidecar = (staged_path, manifest) -> error("injected sidecar failure"),
+        ))
+        @test sidecar_err isa ErrorException
+        @test occursin("injected sidecar failure", sprint(showerror, sidecar_err))
+        @test read(png, String) == "sentinel-png"
+        @test read(sidecar, String) == "sentinel-json"
+        @test readdir(target) == ["correlation-matrix-transparent.json", "correlation-matrix-transparent.png"]
+    end
+end
+
+@testset "render_demo replaces both sentinel artifacts on a normal render" begin
+    mktempdir() do output_dir
+        target = joinpath(output_dir, "out")
+        png, sidecar = seed_sentinel_pair(target, "correlation-matrix")
+        path = render_demo("correlation-matrix", target)
+        @test path == png
+        @test read(png, String) != "sentinel-png"
+        @test read(sidecar, String) != "sentinel-json"
+        stats = validate_png(png)
+        manifest = JSON3.read(read(sidecar, String))
+        @test manifest["demo"] == "correlation-matrix"
+        @test manifest["artifact"] == basename(png)
+        @test manifest["dimensions"]["width"] == stats.width
+        @test manifest["dimensions"]["height"] == stats.height
+        @test readdir(target) == ["correlation-matrix-transparent.json", "correlation-matrix-transparent.png"]
+    end
+end
+
 @testset "validate_png rejects non-conforming images" begin
     FileIO = CairoMakie.FileIO
     Colors = CairoMakie.Colors

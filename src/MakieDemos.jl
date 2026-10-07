@@ -313,31 +313,63 @@ function validate_png(path::AbstractString)
     )
 end
 
-function render_demo(name::AbstractString, output_dir::AbstractString = "out")
+function write_manifest(path::AbstractString, manifest::Dict)
+    open(path, "w") do io
+        JSON3.pretty(io, manifest)
+        write(io, '\n')
+    end
+end
+
+"""
+    render_demo(name, output_dir = "out"; validator = validate_png, write_sidecar = write_manifest)
+
+Render `name` into `output_dir` as `\$name-transparent.png` plus a JSON sidecar.
+
+The figure and sidecar are first written to a staging directory inside
+`output_dir` (same filesystem) and validated there; the live pair is only
+replaced — via same-filesystem renames — once both staged artifacts are
+complete. A failure while saving, validating, or writing the sidecar leaves the
+previous pair untouched and the staging directory is removed. Rollback: if a
+publish is interrupted between the two renames, re-running the render republishes
+both artifacts.
+"""
+function render_demo(
+    name::AbstractString,
+    output_dir::AbstractString = "out";
+    validator = validate_png,
+    write_sidecar = write_manifest,
+)
     haskey(DEMOS, name) || error("unknown demo: $name")
     mkpath(output_dir)
     apply_theme!()
     figure = DEMOS[name]()
     path = joinpath(output_dir, "$name-transparent.png")
-    started = time()
-    save(path, figure; px_per_unit = 1)
-    elapsed = time() - started
-    stats = validate_png(path)
-    manifest = Dict(
-        "demo" => name,
-        "artifact" => basename(path),
-        "background" => "transparent",
-        "dimensions" => Dict("width" => stats.width, "height" => stats.height),
-        "transparent_pixels" => stats.transparent_pixels,
-        "visible_pixels" => stats.visible_pixels,
-        "colorful_pixels" => stats.colorful_pixels,
-        "render_seconds" => round(elapsed; digits = 4),
-        "backend" => "CairoMakie",
-        "data" => "deterministic synthetic fixture",
-    )
-    open(replace(path, ".png" => ".json"), "w") do io
-        JSON3.pretty(io, manifest)
-        write(io, '\n')
+    sidecar = replace(path, ".png" => ".json")
+    staging = mktempdir(output_dir; prefix = ".$name-transparent-", cleanup = false)
+    try
+        staged_png = joinpath(staging, "artifact.png")
+        staged_json = joinpath(staging, "artifact.json")
+        started = time()
+        save(staged_png, figure; px_per_unit = 1)
+        elapsed = time() - started
+        stats = validator(staged_png)
+        manifest = Dict(
+            "demo" => name,
+            "artifact" => basename(path),
+            "background" => "transparent",
+            "dimensions" => Dict("width" => stats.width, "height" => stats.height),
+            "transparent_pixels" => stats.transparent_pixels,
+            "visible_pixels" => stats.visible_pixels,
+            "colorful_pixels" => stats.colorful_pixels,
+            "render_seconds" => round(elapsed; digits = 4),
+            "backend" => "CairoMakie",
+            "data" => "deterministic synthetic fixture",
+        )
+        write_sidecar(staged_json, manifest)
+        mv(staged_png, path; force = true)
+        mv(staged_json, sidecar; force = true)
+    finally
+        rm(staging; force = true, recursive = true)
     end
     return path
 end
